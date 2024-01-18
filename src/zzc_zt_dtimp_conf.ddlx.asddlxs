@@ -1,0 +1,136 @@
+@Metadata.layer: #CORE
+@UI: {
+  headerInfo: {
+    typeName: 'Configuration',
+    typeNamePlural: 'Configurations'
+  }
+}
+annotate view ZZC_ZT_DTIMP_CONF with
+{
+  @UI.facet: [ {
+    id: 'idIdentification',
+    type: #IDENTIFICATION_REFERENCE,
+    label: 'Basic',
+    position: 10
+  },
+
+    {
+        id:              'Function',
+        targetQualifier: 'Function_FG',
+        purpose:         #STANDARD,
+        type:            #FIELDGROUP_REFERENCE,
+        label:           'ABAP Functions',
+        position:        20
+      },
+      {
+        id:              'File',
+        targetQualifier: 'File_FG',
+        purpose:         #STANDARD,
+        type:            #FIELDGROUP_REFERENCE,
+        label:           'File Processing',
+        position:        30
+      },
+    {
+        id:              'Template',
+        targetQualifier: 'Template_FG',
+        purpose:         #STANDARD,
+        type:            #FIELDGROUP_REFERENCE,
+        label:           'Template Area',
+        position:        40
+      }
+   ]
+  @UI.hidden: true
+  UUID;
+
+  @UI.lineItem: [ {
+    position: 10 ,
+    importance: #MEDIUM,
+    label: ''
+  }
+   ]
+  @UI.identification: [ {
+    position: 10 ,
+    label: ''
+  } ]
+  Object;
+
+  @UI.lineItem: [ {
+    position: 20 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.identification: [ {
+    position: 20 ,
+    label: ''
+  } ]
+  Objectname;
+
+  @UI.lineItem: [ {
+    position: 30 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup:     [ { position: 10, qualifier: 'Function_FG' } ]
+  Fmname;
+
+  @UI.lineItem: [ {
+    position: 40 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup:     [ { position: 10, qualifier: 'File_FG' } ]
+  Mimetype;
+
+  @UI.lineItem: [ {
+    position: 50 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup:     [ { position: 20, qualifier: 'File_FG' } ]
+  Sheetname;
+
+  @UI.lineItem: [ {
+    position: 60 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup:     [ { position: 20, qualifier: 'Function_FG' } ]
+  Structname;
+
+
+  @UI.lineItem: [ {
+  position: 61 ,
+  importance: #MEDIUM,
+  label: ''
+  } ]
+  @UI.fieldGroup:     [ { position: 61, qualifier: 'Template_FG' } ]
+  @UI.hidden: true
+  MimeTypeForTemplate;
+
+  @UI.lineItem: [ {
+    position: 62 ,
+    importance: #MEDIUM,
+    label: 'Template'
+  } ]
+  @UI.fieldGroup:     [ { position: 62, qualifier: 'Template_FG' , label: 'Template'} ]
+  Template;
+
+  @UI.lineItem: [ {
+    position: 63 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup:     [ { position: 63, qualifier: 'Template_FG' } ]
+  @UI.hidden: true
+  FileName;
+
+
+  @UI.fieldGroup:     [ { position: 30, qualifier: 'File_FG', label:'Reading from line'} ]
+  StartLine;
+
+  @UI.fieldGroup:     [ { position: 40, qualifier: 'File_FG' , label:'Reading from column(A/B/C)' } ]
+  StartColumn;
+
+  @UI.hidden: true
+  LocalLastChangedAt;
+}

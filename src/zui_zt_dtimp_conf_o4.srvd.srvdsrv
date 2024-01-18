@@ -1,0 +1,4 @@
+@EndUserText.label: 'Service definition for ZZC_ZT_DTIMP_CONF'
+define service ZUI_ZT_DTIMP_CONF_O4 {
+  expose ZZC_ZT_DTIMP_CONF as Configuration;
+}

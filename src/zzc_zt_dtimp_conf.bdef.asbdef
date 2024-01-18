@@ -1,0 +1,23 @@
+projection;
+//strict ( 2 );
+strict;
+use draft;
+//extensible;
+
+define behavior for ZZC_ZT_DTIMP_CONF alias Configuration
+use etag
+//extensible
+
+{
+  use create;
+  use update;
+  use delete;
+
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+
+//  use action zzPrintPDFAction;
+}

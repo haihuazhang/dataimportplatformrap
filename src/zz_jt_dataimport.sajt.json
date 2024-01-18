@@ -1,0 +1,19 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Job Template of Batch Data Import",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "catalogName": "ZZ_JCE_DATAIMPORT"
+  },
+  "parameters": {
+    "singleValueParameters": [
+      {
+        "name": "P_ID",
+        "value": ""
+      }
+    ]
+  }
+}

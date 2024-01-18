@@ -1,0 +1,140 @@
+@Metadata.layer: #CORE
+@UI: {
+  headerInfo: {
+    typeName: 'Batch Import File',
+    typeNamePlural: 'Files',
+    imageUrl: 'Attachment'
+  },
+  presentationVariant:[{
+    visualizations: [{type: #AS_LINEITEM}],
+    sortOrder: [ { by: 'LocalLastChangedAt' , direction: #DESC } ]
+  }]
+}
+annotate view ZZC_ZT_DTIMP_FILES with
+{
+  @UI.facet: [
+  {
+        id:              'General',
+        targetQualifier: 'General_FG',
+  //        parentId:        'Agency',
+        purpose:         #STANDARD,
+        type:            #FIELDGROUP_REFERENCE,
+        label:           'General',
+        position:        10
+      },
+  {
+        id:              'Job',
+        targetQualifier: 'Job_FG',
+  //        parentId:        'Agency',
+        purpose:         #STANDARD,
+        type:            #FIELDGROUP_REFERENCE,
+        label:           'Job',
+        position:        20
+      }
+      ]
+  @UI.hidden: true
+  UUID;
+
+  @UI.fieldGroup: [ { position: 10, qualifier: 'General_FG', label: 'Configuration' } ]
+  @EndUserText.label: 'Configuration'
+  UuidConf;
+
+  @UI.lineItem: [ {
+  position: 10 ,
+  importance: #HIGH,
+  label: ''
+  } ]
+  @UI.fieldGroup: [ { position: 20, qualifier: 'General_FG' } ]
+  Objectname;
+
+  @UI.hidden: true
+  MimeType;
+
+  @UI.lineItem: [ {
+    position: 20 ,
+    importance: #HIGH,
+    label: ''
+  } ]
+  @UI.fieldGroup: [ { position: 30, qualifier: 'General_FG', label: 'Import File here' } ]
+  Attachment;
+
+  @UI.selectionField: [ { position: 20 } ]
+  @UI.lineItem: [ {
+    position: 30 ,
+    importance: #HIGH,
+    label: ''
+  } ]
+  FileName;
+
+  @UI.lineItem: [ {
+  position: 40,
+  importance: #HIGH,
+  label: 'Job Status',
+  criticality: 'JobStatusCriticality'
+  } ]
+  @UI: { fieldGroup: [ { qualifier: 'Job_FG',
+                         position: 10 ,
+                         label: 'Job Status',
+                         criticality: 'JobStatusCriticality' } ] ,
+         dataPoint:    { title: 'Generation Job Status',
+                         targetValueElement: 'JobStatusText',
+                         criticality: 'JobStatusCriticality',
+                         criticalityRepresentation: #WITH_ICON }
+       }
+  JobStatusText;
+
+  @UI.lineItem: [ {
+  position: 50,
+  importance: #HIGH,
+  label: 'Log',
+  criticality: 'LogStatusCriticality',
+  type: #WITH_URL,
+  url: 'ApplicationLogUrl'
+  } ]
+  @UI: { fieldGroup: [ { qualifier: 'Job_FG',
+                         position: 20 ,
+                         label: 'Log',
+                         criticality: 'LogStatusCriticality' } ] ,
+         dataPoint:    { title: 'Generation Log',
+                         targetValueElement: 'LogStatusText',
+                         criticality: 'LogStatusCriticality',
+                         criticalityRepresentation: #WITH_ICON }
+       }
+  LogStatusText;
+
+  @UI.lineItem: [ {
+    position: 60 ,
+    importance: #LOW,
+    label: 'Job Name'
+  } ]
+  JobName;
+
+  @UI.lineItem: [ {
+    position: 70 ,
+    importance: #LOW,
+    label: 'Job Count'
+  } ]
+  JobCount;
+
+  @UI.lineItem: [ {
+    position: 80 ,
+    importance: #LOW,
+    label: 'Log Handle'
+  } ]
+  LogHandle;
+
+
+  @UI.hidden: true
+  JobStatus;
+  @UI.hidden: true
+  JobStatusCriticality;
+  @UI.hidden: true
+  LogStatus;
+  @UI.hidden: true
+  LogStatusCriticality;
+  @UI.hidden: true
+  ApplicationLogUrl;
+  @UI.hidden: true
+  LocalLastChangedAt;
+
+}

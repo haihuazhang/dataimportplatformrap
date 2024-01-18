@@ -1,0 +1,4 @@
+@EndUserText.label: 'ZUI_DTIMP_FUNC'
+define service ZUI_DTIMP_FUNC {
+  expose ZZR_DTIMP_FUNC;
+}

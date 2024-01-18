@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_FUGR" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <AREAT>Demo Function for Batch Data Import</AREAT>
+   <INCLUDES>
+    <SOBJ_NAME>LZZFG_DTIMP_DEMOTOP</SOBJ_NAME>
+    <SOBJ_NAME>SAPLZZFG_DTIMP_DEMO</SOBJ_NAME>
+   </INCLUDES>
+   <FUNCTIONS>
+    <item>
+     <FUNCNAME>Z_DEMO_DTIMP_001</FUNCNAME>
+     <SHORT_TEXT>Function Module of Batch Data Import (Demo)</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>IO_DATA</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>REF TO DATA</TYP>
+       <REF_CLASS>X</REF_CLASS>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IV_STRUC</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>ZZESTRUCTNAME</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>EO_DATA</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>REF TO DATA</TYP>
+       <REF_CLASS>X</REF_CLASS>
+      </RSEXP>
+     </EXPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>IO_DATA</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IV_STRUC</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>EO_DATA</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>Z_DEMO_DTIMP_002</FUNCNAME>
+     <SHORT_TEXT>Demo Function Module 2 for Batch Data Import</SHORT_TEXT>
+    </item>
+   </FUNCTIONS>
+  </asx:values>
+ </asx:abap>
+</abapGit>
