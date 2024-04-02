@@ -45,6 +45,23 @@
         <STATUS>U</STATUS>
         <VALUES>
          <item>
+          <FIELD>ACTVT</FIELD>
+          <VALUE>Display,Delete</VALUE>
+          <VALUES>
+           <item>
+            <UUID>LaCeZaPAHt6d3X5xTllJvQ==</UUID>
+            <LOW_VALUE>03</LOW_VALUE>
+           </item>
+           <item>
+            <UUID>LaCeZaPAHt6d3X5xTllpvQ==</UUID>
+            <LOW_VALUE>06</LOW_VALUE>
+           </item>
+          </VALUES>
+          <TEXT>Activity</TEXT>
+          <STATUS>U</STATUS>
+          <IS_ACTVT>X</IS_ACTVT>
+         </item>
+         <item>
           <FIELD>ALG_OBJECT</FIELD>
           <VALUE>ZZ_ALO_DATAIMPORT</VALUE>
           <VALUES>
@@ -55,23 +72,6 @@
           </VALUES>
           <TEXT>Application log: Object name (Application code)</TEXT>
           <STATUS>U</STATUS>
-         </item>
-         <item>
-          <FIELD>ACTVT</FIELD>
-          <VALUE>Delete,Display</VALUE>
-          <VALUES>
-           <item>
-            <UUID>LaCeZaPAHt6d3X5xTllpvQ==</UUID>
-            <LOW_VALUE>06</LOW_VALUE>
-           </item>
-           <item>
-            <UUID>LaCeZaPAHt6d3X5xTllJvQ==</UUID>
-            <LOW_VALUE>03</LOW_VALUE>
-           </item>
-          </VALUES>
-          <TEXT>Activity</TEXT>
-          <STATUS>U</STATUS>
-          <IS_ACTVT>X</IS_ACTVT>
          </item>
          <item>
           <FIELD>ALG_SUBOBJ</FIELD>

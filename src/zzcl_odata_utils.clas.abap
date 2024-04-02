@@ -26,6 +26,14 @@ CLASS zzcl_odata_utils DEFINITION
       CHANGING
         !ct_data  TYPE STANDARD TABLE .
 
+
+    CLASS-METHODS get_paging
+      IMPORTING
+        !io_paging TYPE REF TO if_rap_query_paging
+      EXPORTING
+        top        TYPE i
+        skip       TYPE i.
+
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -36,11 +44,11 @@ CLASS ZZCL_ODATA_UTILS IMPLEMENTATION.
 
 
   METHOD filtering.
-    try.
-        data(lt_filter) = io_filter->get_as_ranges(  ).
-      catch cx_rap_query_filter_no_range INTO DATA(lx_no_range).
+    TRY.
+        DATA(lt_filter) = io_filter->get_as_ranges(  ).
+      CATCH cx_rap_query_filter_no_range INTO DATA(lx_no_range).
         "handle exception
-    endtry.
+    ENDTRY.
     FIELD-SYMBOLS: <fs_data> TYPE any,
                    <fs_fval> TYPE any.
     DATA: lv_index TYPE sy-tabix.
@@ -56,6 +64,33 @@ CLASS ZZCL_ODATA_UTILS IMPLEMENTATION.
         ENDIF.
       ENDLOOP.
     ENDLOOP.
+
+
+  ENDMETHOD.
+
+
+  METHOD get_paging.
+    skip =  io_paging->get_offset(  ).
+    top = io_paging->get_page_size(  ).
+
+
+*    DATA: lv_from TYPE i,
+*          lv_to   TYPE i.
+*
+*    IF lv_skip IS NOT INITIAL.
+*      lv_from = lv_skip + 1. "start from record
+*    ELSE.
+*      lv_from = 1.
+*    ENDIF.
+*    IF lv_top EQ if_rap_query_paging=>page_size_unlimited OR lv_top IS INITIAL.
+*      lv_to = lines( ct_data ).
+*    ELSE.
+**          IF lv_top IS NOT INITIAL.
+*      lv_to   = lv_from + lv_top - 1.
+*    ENDIF.
+*    IF lv_top EQ if_rap_query_paging=>page_size_unlimited.
+*
+*    ENDIF.
 
 
   ENDMETHOD.
@@ -88,7 +123,7 @@ CLASS ZZCL_ODATA_UTILS IMPLEMENTATION.
     DATA: lv_from TYPE i,
           lv_to   TYPE i.
     DATA: lo_data TYPE REF TO data.
-    FIELD-SYMBOLS: <fs_result> TYPE STANDARD TABLE ,
+    FIELD-SYMBOLS: <fs_result> TYPE STANDARD TABLE,
                    <fs_rec>    TYPE any.
 
     CREATE DATA lo_data LIKE ct_data.

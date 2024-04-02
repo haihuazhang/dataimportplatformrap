@@ -32,7 +32,7 @@ ENDCLASS.
 
 
 
-CLASS zzcl_dtimp_process_generic IMPLEMENTATION.
+CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
 
 
   METHOD add_text_to_app_log_or_console.
