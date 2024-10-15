@@ -7,5 +7,10 @@
   },
   "generalInformation": {
     "className": "ZZCL_DTIMP_PROCESS_GENERIC"
-  }
+  },
+  "parameters": [
+    {
+      "name": "P_ID"
+    }
+  ]
 }

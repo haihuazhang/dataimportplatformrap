@@ -109,12 +109,12 @@ CLASS lhc_files IMPLEMENTATION.
 
     result = VALUE #( FOR file IN files
                    ( %tky                           = file-%tky
-                     %delete = COND #( WHEN file-JobName IS NOT INITIAL
-                                                              THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled   )
-                     %update = COND #( WHEN file-JobName IS NOT INITIAL
-                                                              THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled   )
-                     %action-Edit = COND #( WHEN file-JobName IS NOT INITIAL
-                                                              THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled   )
+*                     %delete = COND #( WHEN file-JobName IS NOT INITIAL
+*                                                              THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled   )
+*                     %update = COND #( WHEN file-JobName IS NOT INITIAL
+*                                                              THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled   )
+*                     %action-Edit = COND #( WHEN file-JobName IS NOT INITIAL
+*                                                              THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled   )
 *                     %field-JobCount = COND #( WHEN file- IS INITIAL
 *                                                              THEN if_abap_behv=>fc-f-read_only ELSE if_abap_behv=>fc-f-unrestricted   )
 *                     %field-JobName = COND #( WHEN file-LastChangedBy IS INITIAL

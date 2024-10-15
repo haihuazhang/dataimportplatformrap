@@ -25,7 +25,8 @@ authorization master( global )
 
   field (mandatory)
   Object,
-  Fmname,
+//  Fmname,
+  ClassName,
   Structname,
   Sheetname,
   StartLine,
@@ -52,6 +53,7 @@ authorization master( global )
     Object = object;
     Objectname = objectname;
     Fmname = fmname;
+    ClassName = classname;
     Mimetype = mimetype;
     Sheetname = sheetname;
     Structname = structname;

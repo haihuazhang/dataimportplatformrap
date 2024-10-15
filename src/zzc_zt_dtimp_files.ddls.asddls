@@ -4,10 +4,12 @@
 define root view entity ZZC_ZT_DTIMP_FILES
   provider contract transactional_query
   as projection on ZZR_ZT_DTIMP_FILES
-{
+{          @ObjectModel.text.element: ['Name']
   key      UUID,
+           Name,
+           @ObjectModel.text.element: ['ConfObjectName']
            UuidConf,
-           _configuration.Objectname,
+           _configuration.Objectname as ConfObjectName,
            MimeType,
            Attachment,
            FileName,
@@ -15,6 +17,9 @@ define root view entity ZZC_ZT_DTIMP_FILES
            JobCount,
            JobName,
            LogHandle,
+           Status,
+           StatusText,
+           StatusCriticality,
 
            @ObjectModel.virtualElementCalculatedBy: 'ABAP:ZZCL_GET_JOB_STATUS'
   virtual  JobStatus            : abap.char( 1 ),
@@ -32,6 +37,7 @@ define root view entity ZZC_ZT_DTIMP_FILES
            @ObjectModel.virtualElementCalculatedBy: 'ABAP:ZZCL_GET_JOB_STATUS'
   virtual  ApplicationLogUrl    : abap.string( 256 ),
 
-           _configuration : redirected to ZZC_ZT_DTIMP_CONF
+           _configuration : redirected to ZZC_ZT_DTIMP_CONF,
+           _Messages      : redirected to composition child ZC_ZT_DTIMP_MSG
 
 }

@@ -7,6 +7,7 @@ define root view entity ZZI_ZT_DTIMP_CONF
       object                 as Object,
       objectname             as Objectname,
       fmname                 as Fmname,
+      classname              as ClassName,
       mimetype               as Mimetype,
       sheetname              as Sheetname,
       structname             as Structname,

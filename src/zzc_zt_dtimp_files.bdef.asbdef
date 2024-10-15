@@ -1,6 +1,7 @@
 projection;
 strict ( 2 );
 use draft;
+use side effects;
 
 define behavior for ZZC_ZT_DTIMP_FILES alias Files
 use etag
@@ -10,9 +11,28 @@ use etag
   use update;
   use delete;
 
+  use association _Messages { create; with draft; }
+
   use action Edit;
   use action Activate;
   use action Discard;
   use action Resume;
   use action Prepare;
+}
+
+define behavior for ZC_ZT_DTIMP_MSG alias Message
+use etag
+
+{
+//  use create;
+  use update;
+  use delete;
+
+use association _Record { with draft; }
+
+//  use action Edit;
+//  use action Activate;
+//  use action Discard;
+//  use action Resume;
+//  use action Prepare;
 }

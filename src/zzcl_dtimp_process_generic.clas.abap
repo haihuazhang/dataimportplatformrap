@@ -13,6 +13,9 @@ CLASS zzcl_dtimp_process_generic DEFINITION
   PRIVATE SECTION.
     DATA: ms_configuration TYPE STRUCTURE FOR READ RESULT zzi_zt_dtimp_conf.
     DATA: ms_file TYPE STRUCTURE FOR READ RESULT zzr_zt_dtimp_files.
+
+    DATA : mt_message_process TYPE TABLE FOR CREATE zzr_zt_dtimp_files\\Files\_Messages.
+
     DATA: uuid TYPE sysuuid_x16.
     DATA: mo_table TYPE REF TO data.
     DATA: out TYPE REF TO if_oo_adt_classrun_out.
@@ -27,16 +30,29 @@ CLASS zzcl_dtimp_process_generic DEFINITION
                                                      i_type TYPE cl_bali_free_text_setter=>ty_severity OPTIONAL
                                            RAISING   cx_bali_runtime.
     METHODS process_logic.
+    METHODS save_messages.
     METHODS save_job_info.
+    METHODS save_process_status
+      IMPORTING
+        i_type TYPE symsgty.
+
 ENDCLASS.
 
 
 
-CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
+CLASS zzcl_dtimp_process_generic IMPLEMENTATION.
 
 
   METHOD add_text_to_app_log_or_console.
     TRY.
+        IF I_type = if_bali_constants=>c_severity_error.
+          save_process_status(
+             i_type = i_type
+           ).
+
+
+
+        ENDIF.
         IF sy-batch = abap_true.
 
           DATA(application_log_free_text) = cl_bali_free_text_setter=>create(
@@ -228,7 +244,13 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
     ENDIF.
     process_logic(  ).
 
-
+    save_messages(  ).
+    TRY.
+        add_text_to_app_log_or_console( i_text = | Check Navigation Messages of this record. |
+                                        ).
+      CATCH cx_bali_runtime.
+        "handle exception
+    ENDTRY.
 
   ENDMETHOD.
 
@@ -243,7 +265,7 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
           kind = if_apj_dt_exec_object=>parameter
           sign = 'I'
           option = 'EQ'
-          low = 'E1AC8CCB08981EDEA8DD9164372E8ACB' )
+          low = '1D22A14A12991EEFA2D48AF2A5953297' )
       ).
 
     TRY.
@@ -278,50 +300,109 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
            lo_data_e TYPE REF TO data.
     FIELD-SYMBOLS : <fs_t_e> TYPE STANDARD TABLE.
 
-    ptab = VALUE #( ( name  = 'IO_DATA'
-                  kind  = abap_func_exporting
-                  value = REF #( mo_table ) )
-                ( name  = 'IV_STRUC'
-                  kind  = abap_func_exporting
-                  value = REF #( ms_configuration-structname ) )
-                ( name  = 'EO_DATA'
-                  kind  = abap_func_importing
-                  value = REF #( lo_data_e ) ) ).
+*    ptab = VALUE #( ( name  = 'IO_DATA'
+*                  kind  = abap_func_exporting
+*                  value = REF #( mo_table ) )
+*                ( name  = 'IV_STRUC'
+*                  kind  = abap_func_exporting
+*                  value = REF #( ms_configuration-structname ) )
+*                ( name  = 'EO_DATA'
+*                  kind  = abap_func_importing
+*                  value = REF #( lo_data_e ) ) ).
 
-    CALL FUNCTION ms_configuration-fmname PARAMETER-TABLE ptab.
+*    CALL FUNCTION ms_configuration-fmname PARAMETER-TABLE ptab.
+*
+    DATA : lo_process_class      TYPE REF TO zzif_process_data,
 
-    TRY.
-        ASSIGN lo_data_e->* TO <fs_t_e>.
-      CATCH cx_bali_runtime.
-        "handle exception
-    ENDTRY.
+           lt_message            TYPE zzt_dmp_data_list,
+           ls_message_for_create TYPE STRUCTURE FOR CREATE zzr_zt_dtimp_files\\Files\_Messages.
+
+    CREATE OBJECT lo_process_class TYPE (ms_configuration-classname).
+
+*    TRY.
+*        ASSIGN lo_data_e->* TO <fs_t_e>.
+*      CATCH cx_bali_runtime.
+*        "handle exception
+*    ENDTRY.
+
+    lo_process_class->process(
+         EXPORTING
+             io_data = mo_table
+             iv_structure = ms_configuration-Structname
+         IMPORTING
+             eo_data = lo_data_e
+             et_message = lt_message
+
+     ).
+
+    " save message
+
+    LOOP AT lt_message ASSIGNING FIELD-SYMBOL(<fs_message_h>).
+
+      LOOP AT <fs_message_h>-message_list ASSIGNING FIELD-SYMBOL(<fs_message>).
+        ls_message_for_create = VALUE #(
+*                            uuid = mt_version_item[ Line = <fs_item>-line ]-uuid
+                       uuid = uuid
+      %target = VALUE #( (
+*                                   DataJson = ls_data-data_json
+                            %cid = cl_system_uuid=>create_uuid_c22_static(  )
+                            Line = <fs_message_h>-line
+                            Type = <fs_message>-type
+                            Id = <fs_message>-id
+                            MsgNumber = <fs_message>-number
+                            Message = <fs_message>-message
+                            MessageV1 = <fs_message>-message_v1
+                            MessageV2 = <fs_message>-message_v2
+                            MessageV3 = <fs_message>-message_v3
+                            MessageV4 = <fs_message>-message_v4
+
+                            %control = VALUE #(
+                               Line = if_abap_behv=>mk-on
+                               Type = if_abap_behv=>mk-on
+                               Id = if_abap_behv=>mk-on
+                               MsgNumber = if_abap_behv=>mk-on
+                               Message = if_abap_behv=>mk-on
+                               MessageV1 = if_abap_behv=>mk-on
+                               MessageV2 = if_abap_behv=>mk-on
+                               MessageV3 = if_abap_behv=>mk-on
+                               MessageV4 = if_abap_behv=>mk-on
+                             )
+                         ) )
+    ).
+        APPEND ls_message_for_create TO mt_message_process.
+      ENDLOOP.
+    ENDLOOP.
+
+
+
+
 
 
     " save log
-    DATA(lv_has_error) = abap_false.
-    LOOP AT <fs_t_e> ASSIGNING FIELD-SYMBOL(<fs_s_e>).
-      TRY.
-          add_text_to_app_log_or_console( i_text = |data line: { sy-tabix }, result: { <fs_s_e>-('type') }, message: {  <fs_s_e>-('message') }|
-                                          i_type = COND #( WHEN <fs_s_e>-('type') = if_bali_constants=>c_severity_error
-                                                           THEN if_bali_constants=>c_severity_warning
-                                                           ELSE <fs_s_e>-('type') ) ).
-          IF <fs_s_e>-('type') = if_bali_constants=>c_severity_error.
-            lv_has_error = abap_true.
-          ENDIF.
-*          add_text_to_app_log_or_console( |{ <fs_s_e>-('OrderID') }   { <fs_s_e>-('DeliveryDate') }  { <fs_s_e>-('OrderQuantity') }| ).
-        CATCH cx_bali_runtime.
-          "handle exception
-      ENDTRY.
-    ENDLOOP.
-
-    IF lv_has_error = abap_true.
-      TRY.
-          add_text_to_app_log_or_console( i_text = |Batch import processing contains errors|
-                                          i_type = if_bali_constants=>c_severity_error ).
-        CATCH cx_bali_runtime.
-          "handle exception
-      ENDTRY.
-    ENDIF.
+*    DATA(lv_has_error) = abap_false.
+*    LOOP AT <fs_t_e> ASSIGNING FIELD-SYMBOL(<fs_s_e>).
+*      TRY.
+*          add_text_to_app_log_or_console( i_text = |data line: { sy-tabix }, result: { <fs_s_e>-('type') }, message: {  <fs_s_e>-('message') }|
+*                                          i_type = COND #( WHEN <fs_s_e>-('type') = if_bali_constants=>c_severity_error
+*                                                           THEN if_bali_constants=>c_severity_warning
+*                                                           ELSE <fs_s_e>-('type') ) ).
+*          IF <fs_s_e>-('type') = if_bali_constants=>c_severity_error.
+*            lv_has_error = abap_true.
+*          ENDIF.
+**          add_text_to_app_log_or_console( |{ <fs_s_e>-('OrderID') }   { <fs_s_e>-('DeliveryDate') }  { <fs_s_e>-('OrderQuantity') }| ).
+*        CATCH cx_bali_runtime.
+*          "handle exception
+*      ENDTRY.
+*    ENDLOOP.
+*
+*    IF lv_has_error = abap_true.
+*      TRY.
+*          add_text_to_app_log_or_console( i_text = |Batch import processing contains errors|
+*                                          i_type = if_bali_constants=>c_severity_error ).
+*        CATCH cx_bali_runtime.
+*          "handle exception
+*      ENDTRY.
+*    ENDIF.
   ENDMETHOD.
 
 
@@ -347,4 +428,54 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
       COMMIT ENTITIES.
     ENDIF.
   ENDMETHOD.
+
+  METHOD save_messages.
+    IF ms_file IS NOT INITIAL.
+      MODIFY ENTITIES OF zzr_zt_dtimp_files
+          ENTITY Files
+          UPDATE FIELDS ( Status )
+          WITH VALUE #( ( Status = 'S'
+                          %control-Status = if_abap_behv=>mk-on
+                          %key-uuid = uuid
+                           ) )
+          CREATE BY \_Messages
+          FROM mt_message_process
+          MAPPED DATA(ls_mapped)
+          FAILED DATA(ls_failed)
+          REPORTED DATA(ls_reported).
+      IF ls_failed-message IS NOT INITIAL.
+        TRY.
+            add_text_to_app_log_or_console( i_text = CONV text200(  ls_reported-message[ 1 ]-%msg->if_message~get_longtext(  ) )
+                                     i_type = if_bali_constants=>c_severity_warning ).
+          CATCH cx_bali_runtime.
+        ENDTRY.
+      ELSE.
+        COMMIT ENTITIES.
+      ENDIF.
+    ENDIF.
+  ENDMETHOD.
+
+
+  METHOD save_process_status.
+    MODIFY ENTITIES OF zzr_zt_dtimp_files
+        ENTITY Files
+        UPDATE FIELDS ( Status )
+        WITH VALUE #( ( Status =  i_type
+                        %control-Status = if_abap_behv=>mk-on
+                        %key-uuid = uuid
+                         ) )
+        MAPPED DATA(ls_mapped)
+        FAILED DATA(ls_failed)
+        REPORTED DATA(ls_reported).
+    IF ls_failed-files IS NOT INITIAL.
+      TRY.
+          add_text_to_app_log_or_console( i_text = CONV text200(  ls_reported-files[ 1 ]-%msg->if_message~get_longtext(  ) )
+                                   i_type = if_bali_constants=>c_severity_warning ).
+        CATCH cx_bali_runtime.
+      ENDTRY.
+    ELSE.
+      COMMIT ENTITIES.
+    ENDIF.
+  ENDMETHOD.
+
 ENDCLASS.

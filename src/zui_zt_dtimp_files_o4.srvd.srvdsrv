@@ -2,4 +2,5 @@
 define service ZUI_ZT_DTIMP_FILES_O4 {
   expose ZZC_ZT_DTIMP_FILES as Files;
   expose ZZC_ZT_DTIMP_CONF  as Configuration;
+  expose ZC_ZT_DTIMP_MSG    as Messages;
 }

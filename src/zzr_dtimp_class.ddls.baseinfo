@@ -2,14 +2,9 @@
 "BASEINFO":
 {
 "FROM":
-[
-"ZZT_DTIMP_FILES"
-],
+[],
 "ASSOCIATED":
-[
-"ZR_ZT_DTIMP_MSG",
-"ZZI_ZT_DTIMP_CONF"
-],
+[],
 "BASE":
 [],
 "ANNO_REF":

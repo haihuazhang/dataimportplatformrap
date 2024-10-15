@@ -13,6 +13,7 @@ with additional save
 {
   field ( readonly )
   UUID,
+  StatusText,
   CreatedAt,
   CreatedBy,
   LastChangedAt,
@@ -33,6 +34,8 @@ with additional save
   update ( features : instance );
   delete ( features : instance );
 
+  association _Messages { create; with draft; }
+
   draft action ( features : instance ) Edit;
   draft action Activate optimized;
   draft action Discard;
@@ -42,6 +45,7 @@ with additional save
   mapping for zzt_dtimp_files
     {
       UUID               = uuid;
+      Name               = name;
       UuidConf           = uuid_conf;
       MimeType           = mime_type;
       Attachment         = attachment;
@@ -54,6 +58,66 @@ with additional save
       JobCount           = jobcount;
       JobName            = jobname;
       LogHandle          = loghandle;
+      Status             = status;
       //    status = status;
+    }
+}
+
+
+
+
+define behavior for ZR_ZT_DTIMP_MSG alias Message
+persistent table zzt_dtimp_msg
+draft table zzt_dtimp_msg_d
+etag master LocalLastChangedAt
+//lock master total etag LastChangedAt
+//authorization master( global )
+lock dependent by _Record
+authorization dependent by _Record
+
+{
+  field ( readonly )
+  Uuid,
+  UUIDRecord,
+  CreatedBy,
+  CreatedAt,
+  LastChangedBy,
+  LastChangedAt,
+  LocalLastChangedAt;
+
+  field ( numbering : managed )
+  Uuid;
+
+
+  //  create;
+  update;
+  delete;
+
+  association _Record { with draft; }
+
+  //  draft action Activate optimized;
+  //  draft action Discard;
+  //  draft action Edit;
+  //  draft action Resume;
+  //  draft determine action Prepare;
+
+  mapping for zzt_dtimp_msg
+    {
+      Uuid               = uuid;
+      UuidRecord         = uuid_record;
+      Line               = line;
+      Type               = type;
+      Id                 = id;
+      MsgNumber          = msg_number;
+      Message            = message;
+      MessageV1          = message_v1;
+      MessageV2          = message_v2;
+      MessageV3          = message_v3;
+      MessageV4          = message_v4;
+      CreatedBy          = created_by;
+      CreatedAt          = created_at;
+      LastChangedBy      = last_changed_by;
+      LastChangedAt      = last_changed_at;
+      LocalLastChangedAt = local_last_changed_at;
     }
 }

@@ -30,10 +30,27 @@ annotate view ZZC_ZT_DTIMP_FILES with
         type:            #FIELDGROUP_REFERENCE,
         label:           'Job',
         position:        20
-      }
+      },
+        {
+    label: 'Messages',
+    id:'Message',
+    purpose: #STANDARD,
+    position: 30,
+    type: #PRESENTATIONVARIANT_REFERENCE,
+    targetElement: '_Messages',
+    targetQualifier: 'messagePV'
+  }
       ]
   @UI.hidden: true
   UUID;
+
+  @UI.lineItem: [ {
+  position: 10 ,
+  importance: #HIGH,
+  label: ''
+  } ]
+  @UI.fieldGroup: [ { position: 10, qualifier: 'General_FG'} ]
+  Name;
 
   @UI.fieldGroup: [ { position: 10, qualifier: 'General_FG', label: 'Configuration' } ]
   @EndUserText.label: 'Configuration'
@@ -44,8 +61,8 @@ annotate view ZZC_ZT_DTIMP_FILES with
   importance: #HIGH,
   label: ''
   } ]
-  @UI.fieldGroup: [ { position: 20, qualifier: 'General_FG' } ]
-  Objectname;
+//  @UI.fieldGroup: [ { position: 20, qualifier: 'General_FG' } ]
+  ConfObjectName;
 
   @UI.hidden: true
   MimeType;
@@ -107,6 +124,7 @@ annotate view ZZC_ZT_DTIMP_FILES with
     importance: #LOW,
     label: 'Job Name'
   } ]
+  @UI.hidden: true
   JobName;
 
   @UI.lineItem: [ {
@@ -114,6 +132,7 @@ annotate view ZZC_ZT_DTIMP_FILES with
     importance: #LOW,
     label: 'Job Count'
   } ]
+  @UI.hidden: true
   JobCount;
 
   @UI.lineItem: [ {
@@ -121,7 +140,31 @@ annotate view ZZC_ZT_DTIMP_FILES with
     importance: #LOW,
     label: 'Log Handle'
   } ]
+  @UI.hidden: true
   LogHandle;
+
+  @UI.selectionField: [ {
+  position: 60
+  } ]
+  @EndUserText.label: 'Process Status'
+  Status;
+
+  @UI.lineItem: [ {
+  position: 100,
+  importance: #HIGH,
+  label: 'Process Status',
+  criticality: 'StatusCriticality'
+  } ]
+  @UI: { fieldGroup: [ { qualifier: 'Job_FG',
+                         position: 60 ,
+                         label: 'Process Status',
+                         criticality: 'StatusCriticality' } ] ,
+         dataPoint:    { title: 'Process Status',
+                         targetValueElement: 'StatusText',
+                         criticality: 'StatusCriticality',
+                         criticalityRepresentation: #WITH_ICON }
+       }
+  StatusText;
 
 
   @UI.hidden: true

@@ -68,10 +68,17 @@ annotate view ZZC_ZT_DTIMP_CONF with
   @UI.lineItem: [ {
     position: 30 ,
     importance: #MEDIUM,
-    label: ''
+    label: 'Function Module Name(Deprecated)'
+  } ]
+  @UI.fieldGroup:     [ { position: 10, qualifier: 'Function_FG', label: 'Function Module Name(Deprecated)'} ]
+  Fmname;
+
+  @UI.lineItem: [ {
+    position: 30 ,
+    importance: #MEDIUM
   } ]
   @UI.fieldGroup:     [ { position: 10, qualifier: 'Function_FG' } ]
-  Fmname;
+  ClassName;
 
   @UI.lineItem: [ {
     position: 40 ,
