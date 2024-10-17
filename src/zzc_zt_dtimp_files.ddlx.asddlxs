@@ -76,11 +76,12 @@ annotate view ZZC_ZT_DTIMP_FILES with
   Attachment;
 
   @UI.selectionField: [ { position: 20 } ]
-  @UI.lineItem: [ {
-    position: 30 ,
-    importance: #HIGH,
-    label: ''
-  } ]
+//  @UI.lineItem: [ {
+//    position: 30 ,
+//    importance: #HIGH,
+//    label: ''
+//  } ]
+//  @UI.hidden: true
   FileName;
 
   @UI.lineItem: [ {

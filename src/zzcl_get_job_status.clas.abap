@@ -13,7 +13,7 @@ ENDCLASS.
 
 
 
-CLASS ZZCL_GET_JOB_STATUS IMPLEMENTATION.
+CLASS zzcl_get_job_status IMPLEMENTATION.
 
 
   METHOD if_sadl_exit_calc_element_read~calculate.
@@ -106,6 +106,7 @@ CLASS ZZCL_GET_JOB_STATUS IMPLEMENTATION.
   METHOD if_sadl_exit_calc_element_read~get_calculation_info.
     CONSTANTS fieldname_jobcount TYPE string VALUE 'JOBCOUNT'.
     CONSTANTS fieldname_jobname TYPE string VALUE 'JOBNAME'.
+    CONSTANTS fieldname_loghandle TYPE string VALUE 'LOGHANDLE'.
 
     IF iv_entity <> 'ZZC_ZT_DTIMP_FILES'.
 *      RAISE EXCEPTION TYPE
@@ -129,6 +130,10 @@ CLASS ZZCL_GET_JOB_STATUS IMPLEMENTATION.
         WHEN 'JOBSTATUSCRITICALITY'.
           COLLECT fieldname_jobcount INTO et_requested_orig_elements.
           COLLECT fieldname_jobname INTO et_requested_orig_elements.
+        WHEN 'APPLICATIONLOGURL'.
+          COLLECT fieldname_jobcount INTO et_requested_orig_elements.
+          COLLECT fieldname_jobname INTO et_requested_orig_elements.
+          COLLECT fieldname_loghandle INTO et_requested_orig_elements.
         WHEN OTHERS.
 *          RAISE EXCEPTION TYPE zapp_cx_demo_01
 *            EXPORTING
