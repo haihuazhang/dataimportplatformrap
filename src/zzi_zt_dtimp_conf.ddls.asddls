@@ -2,6 +2,7 @@
 @EndUserText.label: '##GENERATED ZZT_DTIMP_CONF'
 define root view entity ZZI_ZT_DTIMP_CONF
   as select from zzt_dtimp_conf as Configuration
+  composition of many ZZR_ZT_DTIMP_STRUC     as _Structures
 {
   key uuid                   as UUID,
       object                 as Object,
@@ -30,6 +31,7 @@ define root view entity ZZI_ZT_DTIMP_CONF
       @Semantics.systemDateTime.lastChangedAt: true
       last_changed_at        as LastChangedAt,
       @Semantics.systemDateTime.localInstanceLastChangedAt: true
-      local_last_changed_at  as LocalLastChangedAt
+      local_last_changed_at  as LocalLastChangedAt,
+      _Structures
 
 }

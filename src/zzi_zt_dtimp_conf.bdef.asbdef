@@ -6,66 +6,235 @@ with draft;
 
 define behavior for ZZI_ZT_DTIMP_CONF alias Configuration
 persistent table zzt_dtimp_conf
-draft table ZZT_DTIMP_CONF_D
+draft table zzt_dtimp_conf_d
 etag master LocalLastChangedAt
 lock master total etag LastChangedAt
-authorization master( global )
+authorization master ( global )
 //extensible
 {
   field ( readonly )
-   UUID,
-   CreatedAt,
-   CreatedBy,
-   LastChangedAt,
-   LastChangedBy,
-   LocalLastChangedAt;
+  UUID,
+  CreatedAt,
+  CreatedBy,
+  LastChangedAt,
+  LastChangedBy,
+  LocalLastChangedAt;
 
   field ( numbering : managed )
-   UUID;
+  UUID;
 
-  field (mandatory)
+  field ( mandatory )
   Object,
-//  Fmname,
-  ClassName,
-  Structname,
-  Sheetname,
-  StartLine,
-  StartColumn,
-  Template;
+  //  Fmname,
+  Objectname,
+  ClassName;
+  //  Structname,
+  //  Sheetname,
+  //  StartLine,
+  //  StartColumn,
+  //  Template;
 
 
   create;
   update;
   delete;
 
+  association _Structures { create; with draft; }
+
   draft action Edit;
   draft action Activate optimized;
   draft action Discard;
   draft action Resume;
-  draft determine action Prepare;
-
-//  action zzPrintPDFAction result [1] ZZ1_PRINTING_RESULT;
-//  factory action
-
-  mapping for ZZT_DTIMP_CONF
+  draft determine action Prepare
   {
-    UUID = uuid;
-    Object = object;
-    Objectname = objectname;
-    Fmname = fmname;
-    ClassName = classname;
-    Mimetype = mimetype;
-    Sheetname = sheetname;
-    Structname = structname;
-    CreatedBy = created_by;
-    CreatedAt = created_at;
-    LastChangedBy = last_changed_by;
-    LastChangedAt = last_changed_at;
-    LocalLastChangedAt = local_last_changed_at;
-    MimeTypeForTemplate = mime_type_for_template;
-    Template = template;
-    FileName = file_name;
-    StartLine = start_line;
-    StartColumn = start_column;
+
+
+//    validation structure~checkRootNodeOnSave;
+    validation field~checkFields;
+
+//    validation structure~checkFields;
+//    validation structure~checkSubFields;
+    validation structure~checkStructure;
+
+//    validation checkFields;
+//    validation checkRootNodeOnSave;
+    validation checkConfiguration;
   }
+
+//  validation checkFields on save { create; update; }
+//  validation checkRootNodeOnSave on save { create; update; }
+  validation checkConfiguration on save { create; update; }
+
+  //  determination createTemplate on save { create; update; }
+
+  //  action zzPrintPDFAction result [1] ZZ1_PRINTING_RESULT;
+  //  factory action
+
+  mapping for zzt_dtimp_conf
+    {
+      UUID                = uuid;
+      Object              = object;
+      Objectname          = objectname;
+      Fmname              = fmname;
+      ClassName           = classname;
+      Mimetype            = mimetype;
+      Sheetname           = sheetname;
+      Structname          = structname;
+      CreatedBy           = created_by;
+      CreatedAt           = created_at;
+      LastChangedBy       = last_changed_by;
+      LastChangedAt       = last_changed_at;
+      LocalLastChangedAt  = local_last_changed_at;
+      MimeTypeForTemplate = mime_type_for_template;
+      Template            = template;
+      FileName            = file_name;
+      StartLine           = start_line;
+      StartColumn         = start_column;
+    }
+}
+
+
+define behavior for ZZR_ZT_DTIMP_STRUC alias Structure
+persistent table zzt_dtimp_struc
+draft table zzt_dtimp_s000_d
+etag master LocalLastChangedAt
+//lock master total etag LastChangedAt
+//authorization master( global )
+lock dependent by _Conf
+authorization dependent by _Conf
+
+{
+  field ( readonly )
+  Uuid,
+  UUIDConf,
+  CreatedBy,
+  CreatedAt,
+  LastChangedBy,
+  LastChangedAt,
+  LocalLastChangedAt;
+
+  field ( numbering : managed )
+  Uuid;
+
+
+  field ( mandatory )
+  SheetName,
+  StartColumn,
+  StartLine;
+
+  field ( features : instance )
+  SheetNameUp;
+
+  //  create;
+  update;
+  delete;
+
+  association _Conf { with draft; }
+  association _Fields { create; with draft; }
+
+//  validation checkRootNodeOnSave on save { create; update; }
+//  validation checkFields on save { create; update; }
+//  validation checkSubFields on save { create; update; }
+
+  validation checkStructure on save { create; update; }
+
+
+  determination determineTemplatebyStructure on save { create; update; delete; }
+
+
+  side effects { field RootNode affects permissions ( field SheetNameUp ); }
+
+  //  draft action Activate optimized;
+  //  draft action Discard;
+  //  draft action Edit;
+  //  draft action Resume;
+  //  draft determine action Prepare;
+
+  mapping for zzt_dtimp_struc
+    {
+      Uuid               = uuid;
+      UUIDConf           = uuid_conf;
+      RootNode           = root_node;
+      SheetName          = sheet_name;
+      SheetNameUp        = sheet_name_up;
+      StartLine          = start_line;
+      StartColumn        = start_column;
+      HasFieldnameLine   = has_fieldname_line;
+      HasDescLine        = has_desc_line;
+      CreatedBy          = created_by;
+      CreatedAt          = created_at;
+      LastChangedBy      = last_changed_by;
+      LastChangedAt      = last_changed_at;
+      LocalLastChangedAt = local_last_changed_at;
+    }
+}
+
+
+define behavior for ZZR_ZT_DTIMP_FIELD alias Field
+persistent table zzt_dtimp_field
+draft table zzt_dtimp_fiel_d
+etag master LocalLastChangedAt
+//lock master total etag LastChangedAt
+//authorization master( global )
+lock dependent by _Conf
+authorization dependent by _Conf
+
+{
+  field ( readonly )
+  Uuid,
+  UUIDStruc,
+  UUIDConf,
+  CreatedBy,
+  CreatedAt,
+  LastChangedBy,
+  LastChangedAt,
+  LocalLastChangedAt;
+
+  field ( numbering : managed )
+  Uuid;
+
+  field ( mandatory )
+  FieldName,
+  FieldType1,
+  FieldLength,
+  Sequence;
+
+  //  create;
+  update;
+  delete;
+
+  association _Structure { with draft; }
+  association _Conf { with draft; }
+
+  determination determineTemplatebyField on save { create; update; delete; }
+
+  validation checkFields on save { create; update; }
+
+  //  draft action Activate optimized;
+  //  draft action Discard;
+  //  draft action Edit;
+  //  draft action Resume;
+  //  draft determine action Prepare;
+
+  mapping for zzt_dtimp_field
+    {
+      UUID               = uuid;
+      UUIDStruc          = uuid_struc;
+      UUIDConf           = uuid_conf;
+      FieldName          = field_name;
+      FieldDescription   = field_desc;
+      IsKeyField         = is_key_field;
+      //    KeyField = key_field;
+      Sequence           = sequence;
+      IsForeignField     = is_foreign_field;
+      ForeignField       = foreign_field;
+      FieldLength        = field_length;
+      FieldType1         = field_type;
+      FieldDecimal       = field_decimal;
+      CreatedBy          = created_by;
+      CreatedAt          = created_at;
+      LastChangedBy      = last_changed_by;
+      LastChangedAt      = last_changed_at;
+      LocalLastChangedAt = local_last_changed_at;
+    }
 }

@@ -6,7 +6,9 @@
 "ZZT_DTIMP_CONF"
 ],
 "ASSOCIATED":
-[],
+[
+"ZZR_ZT_DTIMP_STRUC"
+],
 "BASE":
 [],
 "ANNO_REF":

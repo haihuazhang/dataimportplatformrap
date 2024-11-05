@@ -1,0 +1,162 @@
+@Metadata.layer: #CORE
+@UI.headerInfo.title.type: #STANDARD
+@UI.headerInfo.title.value: 'Uuid'
+@UI.headerInfo.description.type: #STANDARD
+@UI.headerInfo.description.value: 'Uuid'
+@UI: {
+  headerInfo: {
+    typeName: 'Structure',
+    typeNamePlural: 'Structures'
+  }
+}
+annotate view ZZC_ZT_DTIMP_STRUC with
+{
+  @EndUserText.label: 'Uuid'
+  @UI.facet: [ {
+    label: 'General Information',
+    id: 'GeneralInfo',
+    purpose: #STANDARD,
+    position: 10 ,
+    type: #IDENTIFICATION_REFERENCE
+  },
+  {
+    label: 'Template Configuration',
+    id: 'TemplateConf',
+    purpose: #STANDARD,
+    position: 20 ,
+    type: #FIELDGROUP_REFERENCE,
+    targetQualifier: 'TemplateConf'
+  },
+  {
+    label: 'Fields',
+    id:'Fields',
+    purpose: #STANDARD,
+    position: 30,
+    type: #LINEITEM_REFERENCE,
+    targetElement: '_Fields'
+  }]
+  @UI.identification: [ {
+    position: 10 ,
+    label: 'UUID'
+  } ]
+  @UI.lineItem: [ {
+    position: 10 ,
+    label: 'UUID'
+  } ]
+  @UI.selectionField: [ {
+    position: 10
+  } ]
+  @UI.hidden: true
+  UUID;
+
+  @EndUserText.label: 'UuidExcel'
+  @UI.identification: [ {
+    position: 20 ,
+    label: 'UUID'
+  } ]
+  @UI.lineItem: [ {
+    position: 20 ,
+    label: 'UUID'
+  } ]
+  @UI.selectionField: [ {
+    position: 20
+  } ]
+  @UI.hidden: true
+  UUIDConf;
+
+  @UI.identification: [ {
+    position: 30 ,
+    label: 'Is Root Node'
+  } ]
+  @UI.lineItem: [ {
+    position: 30 ,
+    label: 'Is Root Node'
+  } ]
+  @UI.selectionField: [ {
+    position: 30
+  } ]
+  RootNode;
+
+  @UI.identification: [ {
+    position: 40 ,
+    label: 'Sheet Name'
+  } ]
+  @UI.lineItem: [ {
+    position: 40 ,
+    label: 'Sheet Name'
+  } ]
+  @UI.selectionField: [ {
+    position: 40
+  } ]
+  SheetName;
+
+  @UI.identification: [ {
+    position: 50 ,
+    label: 'Sheet Name of Parent'
+  } ]
+  @UI.lineItem: [ {
+    position: 50 ,
+    label: 'Sheet Name of Parent'
+  } ]
+  @UI.selectionField: [ {
+    position: 50
+  } ]
+  SheetNameUp;
+
+  @UI.fieldGroup: [ {
+    position: 60 ,
+    label: 'Reading from line',
+    qualifier: 'TemplateConf'
+  } ]
+  @UI.lineItem: [ {
+    position: 60 ,
+    label: 'Reading from line'
+  } ]
+  @UI.selectionField: [ {
+    position: 60
+  } ]
+  StartLine;
+
+  @EndUserText.label: 'Reading from column(A/B/C)'
+
+  @UI.fieldGroup: [ {
+  position: 70 ,
+  label: 'Reading from column(A/B/C)',
+  qualifier: 'TemplateConf'
+} ]
+  @UI.lineItem: [ {
+    position: 70
+  } ]
+  @UI.selectionField: [ {
+    position: 70
+  } ]
+  StartColumn;
+
+
+  @UI.fieldGroup: [ {
+  position: 80 ,
+  qualifier: 'TemplateConf'
+  } ]
+  @UI.lineItem: [ {
+    position: 80
+  } ]
+  @UI.selectionField: [ {
+    position: 80
+  } ]
+  HasFieldnameLine;
+
+  @UI.fieldGroup: [ {
+  position: 90 ,
+  qualifier: 'TemplateConf'
+  } ]
+  @UI.lineItem: [ {
+    position: 90
+  } ]
+  @UI.selectionField: [ {
+    position: 90
+  } ]
+  HasDescLine;
+
+  @UI.hidden: true
+  LocalLastChangedAt;
+}

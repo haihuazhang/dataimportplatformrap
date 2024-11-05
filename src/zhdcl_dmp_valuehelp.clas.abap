@@ -30,8 +30,7 @@ ENDCLASS.
 
 
 
-CLASS zhdcl_dmp_valuehelp IMPLEMENTATION.
-
+CLASS ZHDCL_DMP_VALUEHELP IMPLEMENTATION.
 
 
   METHOD get_process_class.

@@ -35,6 +35,7 @@ with additional save
   delete ( features : instance );
 
   association _Messages { create; with draft; }
+  association _ImportData { create; with draft; }
 
   draft action ( features : instance ) Edit;
   draft action Activate optimized;
@@ -114,6 +115,55 @@ authorization dependent by _Record
       MessageV2          = message_v2;
       MessageV3          = message_v3;
       MessageV4          = message_v4;
+      CreatedBy          = created_by;
+      CreatedAt          = created_at;
+      LastChangedBy      = last_changed_by;
+      LastChangedAt      = last_changed_at;
+      LocalLastChangedAt = local_last_changed_at;
+    }
+}
+
+
+define behavior for ZZR_ZT_DTIMP_DATA alias ImportData
+persistent table zzt_dtimp_data
+draft table zzt_dtimp_data_d
+etag master LocalLastChangedAt
+//lock master total etag LastChangedAt
+//authorization master( global )
+lock dependent by _Record
+authorization dependent by _Record
+
+{
+  field ( readonly )
+  Uuid,
+  UUIDRecord,
+  CreatedBy,
+  CreatedAt,
+  LastChangedBy,
+  LastChangedAt,
+  LocalLastChangedAt;
+
+  field ( numbering : managed )
+  Uuid;
+
+
+  //  create;
+  update;
+  delete;
+
+  association _Record { with draft; }
+  //  draft action Activate optimized;
+  //  draft action Discard;
+  //  draft action Edit;
+  //  draft action Resume;
+  //  draft determine action Prepare;
+
+  mapping for zzt_dtimp_data
+    {
+      Uuid               = uuid;
+      UuidRecord         = uuid_record;
+      DataJson           = data_json;
+      Line               = line;
       CreatedBy          = created_by;
       CreatedAt          = created_at;
       LastChangedBy      = last_changed_by;

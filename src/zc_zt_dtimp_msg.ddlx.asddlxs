@@ -174,68 +174,6 @@ annotate view ZC_ZT_DTIMP_MSG with
   } ]
   MessageV4;
 
-  @UI.identification: [ {
-    position: 120 ,
-    label: 'Created By'
-  } ]
-  @UI.lineItem: [ {
-    position: 120 ,
-    label: 'Created By'
-  } ]
-  @UI.selectionField: [ {
-    position: 120
-  } ]
-  CreatedBy;
-
-  @UI.identification: [ {
-    position: 130 ,
-    label: 'Created On'
-  } ]
-  @UI.lineItem: [ {
-    position: 130 ,
-    label: 'Created On'
-  } ]
-  @UI.selectionField: [ {
-    position: 130
-  } ]
-  CreatedAt;
-
-  @UI.identification: [ {
-    position: 140 ,
-    label: 'Changed By'
-  } ]
-  @UI.lineItem: [ {
-    position: 140 ,
-    label: 'Changed By'
-  } ]
-  @UI.selectionField: [ {
-    position: 140
-  } ]
-  LastChangedBy;
-
-  @UI.identification: [ {
-    position: 150 ,
-    label: 'Changed On'
-  } ]
-  @UI.lineItem: [ {
-    position: 150 ,
-    label: 'Changed On'
-  } ]
-  @UI.selectionField: [ {
-    position: 150
-  } ]
-  LastChangedAt;
-
-  @UI.identification: [ {
-    position: 160 ,
-    label: 'Changed On'
-  } ]
-  @UI.lineItem: [ {
-    position: 160 ,
-    label: 'Changed On'
-  } ]
-  @UI.selectionField: [ {
-    position: 160
-  } ]
+  @UI.hidden: true
   LocalLastChangedAt;
 }

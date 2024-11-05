@@ -39,6 +39,14 @@ annotate view ZZC_ZT_DTIMP_FILES with
     type: #PRESENTATIONVARIANT_REFERENCE,
     targetElement: '_Messages',
     targetQualifier: 'messagePV'
+  },
+  {
+    label: 'Data',
+    id:'Data',
+    purpose: #STANDARD,
+    position: 40,
+    type: #LINEITEM_REFERENCE,
+    targetElement: '_ImportData'
   }
       ]
   @UI.hidden: true
@@ -61,7 +69,7 @@ annotate view ZZC_ZT_DTIMP_FILES with
   importance: #HIGH,
   label: ''
   } ]
-//  @UI.fieldGroup: [ { position: 20, qualifier: 'General_FG' } ]
+  //  @UI.fieldGroup: [ { position: 20, qualifier: 'General_FG' } ]
   ConfObjectName;
 
   @UI.hidden: true
@@ -76,12 +84,12 @@ annotate view ZZC_ZT_DTIMP_FILES with
   Attachment;
 
   @UI.selectionField: [ { position: 20 } ]
-//  @UI.lineItem: [ {
-//    position: 30 ,
-//    importance: #HIGH,
-//    label: ''
-//  } ]
-//  @UI.hidden: true
+  //  @UI.lineItem: [ {
+  //    position: 30 ,
+  //    importance: #HIGH,
+  //    label: ''
+  //  } ]
+  //  @UI.hidden: true
   FileName;
 
   @UI.lineItem: [ {
@@ -112,7 +120,10 @@ annotate view ZZC_ZT_DTIMP_FILES with
   @UI: { fieldGroup: [ { qualifier: 'Job_FG',
                          position: 20 ,
                          label: 'Log',
-                         criticality: 'LogStatusCriticality' } ] ,
+                         criticality: 'LogStatusCriticality' ,
+                         type: #WITH_URL,
+                         url: 'ApplicationLogUrl'
+                         } ] ,
          dataPoint:    { title: 'Generation Log',
                          targetValueElement: 'LogStatusText',
                          criticality: 'LogStatusCriticality',

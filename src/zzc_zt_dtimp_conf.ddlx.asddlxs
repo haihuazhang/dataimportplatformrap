@@ -22,14 +22,14 @@ annotate view ZZC_ZT_DTIMP_CONF with
         label:           'ABAP Functions',
         position:        20
       },
-      {
-        id:              'File',
-        targetQualifier: 'File_FG',
-        purpose:         #STANDARD,
-        type:            #FIELDGROUP_REFERENCE,
-        label:           'File Processing',
-        position:        30
-      },
+//      {
+//        id:              'File',
+//        targetQualifier: 'File_FG',
+//        purpose:         #STANDARD,
+//        type:            #FIELDGROUP_REFERENCE,
+//        label:           'File Processing',
+//        position:        30
+//      },
     {
         id:              'Template',
         targetQualifier: 'Template_FG',
@@ -37,7 +37,15 @@ annotate view ZZC_ZT_DTIMP_CONF with
         type:            #FIELDGROUP_REFERENCE,
         label:           'Template Area',
         position:        40
-      }
+      },
+      {
+    label: 'Structures',
+    id:'Structures',
+    purpose: #STANDARD,
+    position: 50,
+    type: #LINEITEM_REFERENCE,
+    targetElement: '_Structures'
+  }
    ]
   @UI.hidden: true
   UUID;
@@ -65,11 +73,11 @@ annotate view ZZC_ZT_DTIMP_CONF with
   } ]
   Objectname;
 
-  @UI.lineItem: [ {
-    position: 30 ,
-    importance: #MEDIUM,
-    label: 'Function Module Name(Deprecated)'
-  } ]
+//  @UI.lineItem: [ {
+//    position: 30 ,
+//    importance: #MEDIUM,
+//    label: 'Function Module Name(Deprecated)'
+//  } ]
   @UI.fieldGroup:     [ { position: 10, qualifier: 'Function_FG', label: 'Function Module Name(Deprecated)'} ]
   Fmname;
 
@@ -80,29 +88,29 @@ annotate view ZZC_ZT_DTIMP_CONF with
   @UI.fieldGroup:     [ { position: 10, qualifier: 'Function_FG' } ]
   ClassName;
 
-  @UI.lineItem: [ {
-    position: 40 ,
-    importance: #MEDIUM,
-    label: ''
-  } ]
+//  @UI.lineItem: [ {
+//    position: 40 ,
+//    importance: #MEDIUM,
+//    label: ''
+//  } ]
   @UI.fieldGroup:     [ { position: 10, qualifier: 'File_FG' } ]
   Mimetype;
 
-  @UI.lineItem: [ {
-    position: 50 ,
-    importance: #MEDIUM,
-    label: ''
-  } ]
+//  @UI.lineItem: [ {
+//    position: 50 ,
+//    importance: #MEDIUM,
+//    label: ''
+//  } ]
   @UI.fieldGroup:     [ { position: 20, qualifier: 'File_FG' } ]
   Sheetname;
 
-  @UI.lineItem: [ {
-    position: 60 ,
-    importance: #MEDIUM,
-    label: ''
-  } ]
-  @UI.fieldGroup:     [ { position: 20, qualifier: 'Function_FG' } ]
-  Structname;
+//  @UI.lineItem: [ {
+//    position: 60 ,
+//    importance: #MEDIUM,
+//    label: ''
+//  } ]
+//  @UI.fieldGroup:     [ { position: 20, qualifier: 'Function_FG' } ]
+//  Structname;
 
 
   @UI.lineItem: [ {
@@ -132,11 +140,11 @@ annotate view ZZC_ZT_DTIMP_CONF with
   FileName;
 
 
-  @UI.fieldGroup:     [ { position: 30, qualifier: 'File_FG', label:'Reading from line'} ]
-  StartLine;
+//  @UI.fieldGroup:     [ { position: 30, qualifier: 'File_FG', label:'Reading from line'} ]
+//  StartLine;
 
-  @UI.fieldGroup:     [ { position: 40, qualifier: 'File_FG' , label:'Reading from column(A/B/C)' } ]
-  StartColumn;
+//  @UI.fieldGroup:     [ { position: 40, qualifier: 'File_FG' , label:'Reading from column(A/B/C)' } ]
+//  StartColumn;
 
   @UI.hidden: true
   LocalLastChangedAt;

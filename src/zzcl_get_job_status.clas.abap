@@ -13,7 +13,7 @@ ENDCLASS.
 
 
 
-CLASS zzcl_get_job_status IMPLEMENTATION.
+CLASS ZZCL_GET_JOB_STATUS IMPLEMENTATION.
 
 
   METHOD if_sadl_exit_calc_element_read~calculate.

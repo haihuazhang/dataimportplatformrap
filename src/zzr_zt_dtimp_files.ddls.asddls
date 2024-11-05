@@ -3,6 +3,7 @@
 define root view entity ZZR_ZT_DTIMP_FILES
   as select from zzt_dtimp_files as Files
   composition of many ZR_ZT_DTIMP_MSG     as _Messages
+  composition of many ZZR_ZT_DTIMP_DATA as _ImportData
   association [0..1] to ZZI_ZT_DTIMP_CONF as _configuration on $projection.UuidConf = _configuration.UUID
 {
   key uuid                                 as UUID,
@@ -48,6 +49,7 @@ define root view entity ZZR_ZT_DTIMP_FILES
       //      status                as Status,
 
       _configuration,
-      _Messages
+      _Messages,
+      _ImportData
 
 }

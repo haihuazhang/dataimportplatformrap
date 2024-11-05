@@ -38,6 +38,7 @@ define root view entity ZZC_ZT_DTIMP_FILES
   virtual  ApplicationLogUrl    : abap.string( 256 ),
 
            _configuration : redirected to ZZC_ZT_DTIMP_CONF,
-           _Messages      : redirected to composition child ZC_ZT_DTIMP_MSG
+           _Messages      : redirected to composition child ZC_ZT_DTIMP_MSG,
+           _ImportData : redirected to composition child ZZC_ZT_DTIMP_DATA
 
 }

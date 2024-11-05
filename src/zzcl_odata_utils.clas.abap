@@ -34,6 +34,12 @@ CLASS zzcl_odata_utils DEFINITION
         top        TYPE i
         skip       TYPE i.
 
+    CLASS-METHODS get_alphabet
+      IMPORTING
+                iv_alphabet        TYPE zzechar1
+                iv_number          TYPE i
+      RETURNING VALUE(ev_alphabet) TYPE zzechar1.
+
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -66,6 +72,21 @@ CLASS ZZCL_ODATA_UTILS IMPLEMENTATION.
     ENDLOOP.
 
 
+  ENDMETHOD.
+
+
+  METHOD get_alphabet.
+*    PARAMETERS char TYPE c DEFAULT 'A'.
+    DATA : cnt          TYPE i VALUE 0,
+           total_length TYPE i,
+           lv_abcde     TYPE c LENGTH 26 VALUE 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.
+    FIND FIRST OCCURRENCE OF iv_alphabet IN lv_abcde MATCH OFFSET cnt.
+    cnt += iv_number.
+    if cnt > 25.
+        ev_alphabet = iv_alphabet.
+    else.
+        ev_alphabet = lv_abcde+cnt(1).
+    ENDIF.
   ENDMETHOD.
 
 

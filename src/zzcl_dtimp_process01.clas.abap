@@ -12,13 +12,14 @@ ENDCLASS.
 
 
 
-CLASS zzcl_dtimp_process01 IMPLEMENTATION.
+CLASS ZZCL_DTIMP_PROCESS01 IMPLEMENTATION.
 
 
   METHOD zzif_process_data~process.
     DATA : ls_message TYPE zzs_dmp_data_list.
 
-    CREATE DATA eo_data TYPE TABLE OF (iv_structure).
+*    CREATE DATA eo_data TYPE TABLE OF (iv_structure).
+    CREATE DATA eo_data TYPE HANDLE io_data_handle.
 
     eo_data->* = io_data->*.
 

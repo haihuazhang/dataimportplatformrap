@@ -31,6 +31,7 @@ define root view entity ZZC_ZT_DTIMP_CONF
   FileName,
   StartLine,
   StartColumn,
-  LocalLastChangedAt
+  LocalLastChangedAt,
+  _Structures : redirected to composition child ZZC_ZT_DTIMP_STRUC
   
 }

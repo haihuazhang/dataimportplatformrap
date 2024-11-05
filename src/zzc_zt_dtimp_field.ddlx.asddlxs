@@ -1,0 +1,173 @@
+@Metadata.layer: #CORE
+@UI.headerInfo.title.type: #STANDARD
+@UI.headerInfo.title.value: 'Uuid'
+@UI.headerInfo.description.type: #STANDARD
+@UI.headerInfo.description.value: 'Uuid'
+@UI: {
+  headerInfo: {
+    typeName: 'Field',
+    typeNamePlural: 'Fields'
+  }
+}
+annotate view ZZC_ZT_DTIMP_FIELD with
+{
+  @EndUserText.label: 'Uuid'
+  @UI.facet: [ {
+    label: 'General Information',
+    id: 'GeneralInfo',
+    purpose: #STANDARD,
+    position: 10 ,
+    type: #IDENTIFICATION_REFERENCE
+  } ]
+  @UI.identification: [ {
+    position: 10 ,
+    label: 'UUID'
+  } ]
+  @UI.lineItem: [ {
+    position: 10 ,
+    label: 'UUID'
+  } ]
+  @UI.selectionField: [ {
+    position: 10
+  } ]
+  @UI.hidden: true
+  UUID;
+
+  @EndUserText.label: 'UuidStruc'
+  @UI.identification: [ {
+    position: 20 ,
+    label: 'UUID'
+  } ]
+  @UI.lineItem: [ {
+    position: 20 ,
+    label: 'UUID'
+  } ]
+  @UI.selectionField: [ {
+    position: 20
+  } ]
+  @UI.hidden: true
+  UUIDStruc;
+
+  @UI.identification: [ {
+    position: 30 ,
+    label: 'Field Name'
+  } ]
+  @UI.lineItem: [ {
+    position: 30 ,
+    label: 'Field Name'
+  } ]
+  @UI.selectionField: [ {
+    position: 30
+  } ]
+  FieldName;
+  
+  @UI.identification: [ {
+    position: 31 
+  } ]
+  @UI.lineItem: [ {
+    position: 31
+  } ]
+  @UI.selectionField: [ {
+    position: 31
+  } ]
+  FieldDescription;
+
+
+  @UI.identification: [ {
+    position: 40 ,
+    label: 'Is Key Field'
+  } ]
+  @UI.lineItem: [ {
+    position: 40 ,
+    label: 'Is Key Field'
+  } ]
+  @UI.selectionField: [ {
+    position: 40
+  } ]
+  IsKeyField;
+
+
+  @UI.identification: [ {
+    position: 41
+  } ]
+  @UI.lineItem: [ {
+    position: 41
+  } ]
+  @UI.selectionField: [ {
+    position: 41
+  } ]
+  Sequence;
+
+  @UI.identification: [ {
+    position: 50 ,
+    label: 'Is Foreign Field'
+  } ]
+  @UI.lineItem: [ {
+    position: 50 ,
+    label: 'Is Foreign Field'
+  } ]
+  @UI.selectionField: [ {
+    position: 50
+  } ]
+  IsForeignField;
+
+  @UI.identification: [ {
+    position: 60 ,
+    label: 'Foreign Field Name'
+  } ]
+  @UI.lineItem: [ {
+    position: 60 ,
+    label: 'Foreign Field Name'
+  } ]
+  @UI.selectionField: [ {
+    position: 60
+  } ]
+  ForeignField;
+
+
+  @UI.identification: [ {
+  position: 70 ,
+  label: 'Field Type'
+  } ]
+  @UI.lineItem: [ {
+    position: 70 ,
+    label: 'Field Type'
+  } ]
+  @UI.selectionField: [ {
+    position: 70
+  } ]
+  FieldType1;
+
+  @UI.identification: [ {
+    position: 80 ,
+    label: 'Field Length'
+  } ]
+  @UI.lineItem: [ {
+    position: 80 ,
+    label: 'Field Length'
+  } ]
+  @UI.selectionField: [ {
+    position: 80
+  } ]
+  FieldLength;
+
+
+
+  @UI.identification: [ {
+    position: 90 ,
+    label: 'Decimal Length'
+  } ]
+  @UI.lineItem: [ {
+    position: 90 ,
+    label: 'Decimal Length'
+  } ]
+  @UI.selectionField: [ {
+    position: 90
+  } ]
+  FieldDecimal;
+
+
+
+  @UI.hidden: true
+  LocalLastChangedAt;
+}
