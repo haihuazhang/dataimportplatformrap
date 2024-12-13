@@ -3,6 +3,9 @@
 @UI.headerInfo.title.value: 'Uuid'
 @UI.headerInfo.description.type: #STANDARD
 @UI.headerInfo.description.value: 'Uuid'
+@UI.createHidden: true
+@UI.updateHidden: true
+@UI.deleteHidden: true
 annotate view ZZC_ZT_DTIMP_DATA with
 {
   @EndUserText.label: 'Uuid'

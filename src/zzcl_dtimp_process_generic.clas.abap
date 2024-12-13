@@ -13,13 +13,13 @@ CLASS zzcl_dtimp_process_generic DEFINITION
   PRIVATE SECTION.
     TYPES : BEGIN OF ts_sheet_content,
               uuid                  TYPE sysuuid_x16,
-              SheetName             TYPE string,
+              sheetname             TYPE string,
               sheetnameup           TYPE string,
-              RootNode              TYPE abap_boolean,
-              StartLine             TYPE int4,
-              StartColumn           TYPE c LENGTH 4,
-              HasFieldnameLine      TYPE zzedtimphasfieldline,
-              HasDescLine           TYPE zzedtimphasdescline,
+              rootnode              TYPE abap_boolean,
+              startline             TYPE int4,
+              startcolumn           TYPE c LENGTH 4,
+              hasfieldnameline      TYPE zzedtimphasfieldline,
+              hasdescline           TYPE zzedtimphasdescline,
               sheet                 TYPE REF TO if_xco_xlsx_ra_worksheet,
               data_table            TYPE REF TO data,
               data_table_with_child TYPE REF TO data,
@@ -27,14 +27,14 @@ CLASS zzcl_dtimp_process_generic DEFINITION
               handle_with_child     TYPE REF TO cl_abap_tabledescr,
             END OF ts_sheet_content,
             tt_sheet_content TYPE TABLE OF ts_sheet_content.
-    DATA: ms_configuration TYPE STRUCTURE FOR READ RESULT zzi_zt_dtimp_conf\\Configuration,
-          mt_structure     TYPE TABLE FOR READ RESULT zzi_zt_dtimp_conf\\Structure,
-          mt_fields        TYPE TABLE FOR READ RESULT zzi_zt_dtimp_conf\\Field.
+    DATA: ms_configuration TYPE STRUCTURE FOR READ RESULT zzi_zt_dtimp_conf\\configuration,
+          mt_structure     TYPE TABLE FOR READ RESULT zzi_zt_dtimp_conf\\structure,
+          mt_fields        TYPE TABLE FOR READ RESULT zzi_zt_dtimp_conf\\field.
 
     DATA: ms_file TYPE STRUCTURE FOR READ RESULT zzr_zt_dtimp_files.
 
-    DATA : mt_message_process TYPE TABLE FOR CREATE zzr_zt_dtimp_files\\Files\_Messages.
-    DATA: mt_import_item TYPE TABLE FOR CREATE zzr_zt_dtimp_files\\Files\_ImportData.
+    DATA : mt_message_process TYPE TABLE FOR CREATE zzr_zt_dtimp_files\\files\_messages.
+    DATA: mt_import_item TYPE TABLE FOR CREATE zzr_zt_dtimp_files\\files\_importdata.
 
     DATA: uuid TYPE sysuuid_x16.
     DATA: mo_table TYPE REF TO data.
@@ -95,15 +95,18 @@ CLASS zzcl_dtimp_process_generic DEFINITION
                 i_decimal             TYPE i
       RETURNING VALUE(ro_element_ref) TYPE REF TO cl_abap_datadescr
       RAISING   cx_parameter_invalid_range.
-    METHODS build_hierarchical_data_model.
+    METHODS build_hierarchical_data_model
+      RAISING
+        zzcx_dtimp_exception.
     METHODS append_child_model_as_node
       CHANGING
         current_sheet_config TYPE ts_sheet_content.
     METHODS append_child_data_as_node
       IMPORTING
-        where_conditions      TYPE string_table
+                where_conditions      TYPE string_table
       CHANGING
-        current_sheet_content TYPE ts_sheet_content.
+                current_sheet_content TYPE ts_sheet_content
+      RAISING   zzcx_dtimp_exception.
     METHODS save_data
       RAISING
         zzcx_dtimp_exception.
@@ -112,7 +115,7 @@ ENDCLASS.
 
 
 
-CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
+CLASS zzcl_dtimp_process_generic IMPLEMENTATION.
 
 
   METHOD add_except_to_log_or_console.
@@ -144,7 +147,9 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
 *          out->write( |sy-batch = abap_false | ).
           out->write( ix_exception->get_longtext(  ) ).
         ENDIF.
-      CATCH cx_bali_runtime INTO DATA(lx_bali_runtime).
+      CATCH cx_bali_runtime INTO DATA(lx_bali_runtime). ##NO_HANDLER
+        ##NO_HANDLER
+        EXIT.
     ENDTRY.
 
 
@@ -153,7 +158,7 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
 
   METHOD add_text_to_app_log_or_console.
     TRY.
-        IF I_type = if_bali_constants=>c_severity_error.
+        IF i_type = if_bali_constants=>c_severity_error.
           save_process_status(
              i_type = i_type
            ).
@@ -178,7 +183,9 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
 *          out->write( |sy-batch = abap_false | ).
           out->write( i_text ).
         ENDIF.
-      CATCH cx_bali_runtime INTO DATA(lx_bali_runtime).
+      CATCH cx_bali_runtime INTO DATA(lx_bali_runtime). ##NO_HANDLER
+        ##NO_HANDLER
+        EXIT.
     ENDTRY.
   ENDMETHOD.
 
@@ -204,13 +211,29 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
 *            append |{ <fs_ff>-FieldName } = '{ <fs_current_line>-(<fs_ff>-ForeignField) }' | to where_conditions_child.
 *          ENDLOOP.
 
-          where_conditions_child = VALUE #(
-            FOR foreign_field IN mt_fields WHERE ( UUIDStruc = <sheet_content>-uuid
-                                                   AND
-                                                   IsForeignField = abap_true )
-            ( |{ foreign_field-FieldName } = '{ <fs_current_line>-(foreign_field-ForeignField) }' |  )
-            ( |AND| )
-          ).
+          TRY.
+              where_conditions_child = VALUE #(
+                FOR foreign_field IN mt_fields WHERE ( uuidstruc = <sheet_content>-uuid
+                                                       AND
+                                                       isforeignfield = abap_true )
+*                ( cl_abap_dyn_prg=>check_allowlist( |{ foreign_field-fieldname } = '{ <fs_current_line>-(foreign_field-foreignfield) }' | ) )
+                ( |{ cl_abap_dyn_prg=>check_allowlist( val = foreign_field-fieldname
+                                                        allowlist_str = foreign_field-fieldname ) } = { cl_abap_dyn_prg=>quote( <fs_current_line>-(foreign_field-foreignfield) )  } |  )
+
+*                 ( cl_abap_dyn_prg=>check_allowlist( val = |{ foreign_field-fieldname } = { cl_abap_dyn_prg=>quote( <fs_current_line>-(foreign_field-foreignfield) ) }|
+*                                                     allowlist_str = |{ foreign_field-fieldname } = { cl_abap_dyn_prg=>quote( <fs_current_line>-(foreign_field-foreignfield) ) }| ) )
+                 ( |AND| )
+              ).
+            CATCH cx_abap_not_in_allowlist INTO DATA(lx_allow).
+              "handle exception
+              RAISE EXCEPTION TYPE zzcx_dtimp_exception
+                EXPORTING
+                  previous = lx_allow.
+          ENDTRY.
+*
+
+
+
           IF lines( where_conditions_child ) > 1.
             DELETE where_conditions_child INDEX lines( where_conditions_child ).
           ENDIF.
@@ -299,6 +322,8 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
         RETURN cl_abap_elemdescr=>get_d(  ).
       WHEN 'S'.
         RETURN cl_abap_elemdescr=>get_string(  ).
+      WHEN 'I'.
+        RETURN cl_abap_elemdescr=>get_i(  ).
     ENDCASE.
 
 *    ( name = 'A' type = cl_abap_elemdescr=>get_string( ) )
@@ -311,20 +336,20 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
   METHOD get_batch_import_configuration.
 
     READ ENTITIES OF zzi_zt_dtimp_conf
-    ENTITY Configuration ALL FIELDS WITH VALUE #( (  %key-uuid = ms_file-uuidconf ) )
+    ENTITY configuration ALL FIELDS WITH VALUE #( (  %key-uuid = ms_file-uuidconf ) )
         RESULT FINAL(lt_configuration)
-        ENTITY Configuration BY \_Structures ALL FIELDS WITH VALUE #( ( %key-uuid = ms_file-UuidConf ) )
+        ENTITY configuration BY \_structures ALL FIELDS WITH VALUE #( ( %key-uuid = ms_file-uuidconf ) )
         RESULT FINAL(lt_structure).
 
     READ ENTITIES OF zzi_zt_dtimp_conf
-    ENTITY Structure  BY \_Fields ALL FIELDS WITH CORRESPONDING #( lt_structure )
+    ENTITY structure  BY \_fields ALL FIELDS WITH CORRESPONDING #( lt_structure )
     RESULT FINAL(lt_fields).
 
     ms_configuration = lt_configuration[ 1 ].
     mt_structure = lt_structure.
     mt_fields = lt_fields.
 
-    SORT mt_fields BY Sequence.
+    SORT mt_fields BY sequence.
 
 *    TRY.
     add_text_to_app_log_or_console( |import object: { ms_configuration-objectname }| ).
@@ -399,12 +424,13 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
     DATA(lo_worksheet) = lo_document->read_access(  )->get_workbook(  )->worksheet->for_name( CONV string( ms_configuration-sheetname ) ).
     DATA(lv_sheet_exists) = lo_worksheet->exists(  ).
     IF lv_sheet_exists = abap_false.
-      TRY.
-          add_text_to_app_log_or_console( i_text = |Excel sheet ms_configuration-Sheetname does not exist in the data file|
-                                          i_type = if_bali_constants=>c_severity_error ).
-        CATCH cx_bali_runtime.
-          "handle exception
-      ENDTRY.
+*      TRY.
+      add_text_to_app_log_or_console( i_text = |Excel sheet ms_configuration-Sheetname does not exist in the data file|
+                                      i_type = if_bali_constants=>c_severity_error ).
+*        CATCH cx_bali_runtime. ##NO_HANDLER
+      ##NO_HANDLER
+      "handle exception
+*      ENDTRY.
       RETURN.
     ENDIF.
 
@@ -514,14 +540,14 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
     add_text_to_app_log_or_console( |Processing excel sheets.| ).
 
     " read xlsx object
-    DATA(lo_document) = xco_cp_xlsx=>document->for_file_content( ms_file-Attachment ).
+    DATA(lo_document) = xco_cp_xlsx=>document->for_file_content( ms_file-attachment ).
 
     DATA ls_sheet_content TYPE ts_sheet_content.
     LOOP AT mt_structure ASSIGNING FIELD-SYMBOL(<fs_conf_excel_s>).
       CLEAR ls_sheet_content.
       ls_sheet_content = CORRESPONDING #( <fs_conf_excel_s> ).
 
-      ls_sheet_content-sheetname = <fs_conf_excel_s>-SheetName.
+      ls_sheet_content-sheetname = <fs_conf_excel_s>-sheetname.
       ls_sheet_content-sheet = lo_document->read_access(  )->get_workbook(  )->worksheet->for_name( ls_sheet_content-sheetname ).
 *      DATA(lv_sheet_exists) = ls_sheet_content-sheet->exists(  ).
       IF ls_sheet_content-sheet->exists(  ) = abap_false.
@@ -535,12 +561,12 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
       "create internal table from fields configuration
       ls_sheet_content-handle = cl_abap_tabledescr=>get(
         p_line_type  = cl_abap_structdescr=>get(
-           VALUE #( FOR field IN mt_fields WHERE ( UUIDStruc = <fs_conf_excel_s>-uuid )
-            ( name = field-FieldName
+           VALUE #( FOR field IN mt_fields WHERE ( uuidstruc = <fs_conf_excel_s>-uuid )
+            ( name = field-fieldname
               type = create_element_handle(
-                        i_type = field-FieldType1
-                        i_length = field-FieldLength
-                        i_decimal = field-FieldDecimal
+                        i_type = field-fieldtype1
+                        i_length = field-fieldlength
+                        i_decimal = field-fielddecimal
                      )
             )
            )
@@ -553,8 +579,8 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
 
 
       DATA(lo_pattern) = xco_cp_xlsx_selection=>pattern_builder->simple_from_to(
-      )->from_row( xco_cp_xlsx=>coordinate->for_numeric_value( <fs_conf_excel_s>-StartLine )
-      )->from_column( xco_cp_xlsx=>coordinate->for_alphabetic_value( <fs_conf_excel_s>-StartColumn )
+      )->from_row( xco_cp_xlsx=>coordinate->for_numeric_value( <fs_conf_excel_s>-startline )
+      )->from_column( xco_cp_xlsx=>coordinate->for_alphabetic_value( <fs_conf_excel_s>-startcolumn )
       )->get_pattern(  ).
 
       ls_sheet_content-sheet->select( lo_pattern )->row_stream(  )->operation->write_to( ls_sheet_content-data_table )->execute(  ).
@@ -646,7 +672,15 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
         RETURN.
     ENDTRY.
 
-    build_hierarchical_data_model(  ).
+    TRY.
+        build_hierarchical_data_model(  ).
+      CATCH zzcx_dtimp_exception INTO DATA(lx_build_data_model).
+        add_except_to_log_or_console(
+            ix_exception = lx_build_data_model
+        ).
+        RETURN.
+        "handle exception
+    ENDTRY.
 
     " save data to data table
     TRY.
@@ -688,9 +722,12 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
           kind = if_apj_dt_exec_object=>parameter
           sign = 'I'
           option = 'EQ'
-          low = '5D6C37D8F3541EEFA5D2F3CAC90E28F3' )
+          low = '4B99A9A4D8731EEFADD559650FF73F4C' )
       ).
-
+    "4B99A9A4D8731EEFAADE695E7824BEA1   GUZ
+    "4B99A9A4-D873-1EEF-AA8F-1E7275F13E9E
+    "4B99A9A4D8731EEFA9E208ACE64BDE9A
+    "'4B99A9A4D8731EEFA9F692A7E7B5DE9B'
     TRY.
 
         if_apj_rt_exec_object~execute( it_parameters = et_parameters ).
@@ -727,7 +764,7 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
     DATA : lo_process_class      TYPE REF TO zzif_process_data,
 
            lt_message            TYPE zzt_dmp_data_list,
-           ls_message_for_create TYPE STRUCTURE FOR CREATE zzr_zt_dtimp_files\\Files\_Messages.
+           ls_message_for_create TYPE STRUCTURE FOR CREATE zzr_zt_dtimp_files\\files\_messages.
 
     add_text_to_app_log_or_console( |Processing custom logic.| ).
     CREATE OBJECT lo_process_class TYPE (ms_configuration-classname).
@@ -819,7 +856,7 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
 
 
   METHOD save_data.
-    DATA : ls_import_item       TYPE STRUCTURE FOR CREATE zzr_zt_dtimp_files\\Files\_ImportData.
+    DATA : ls_import_item       TYPE STRUCTURE FOR CREATE zzr_zt_dtimp_files\\files\_importdata.
     DATA : lv_line TYPE i.
     FIELD-SYMBOLS : <ft_table> TYPE STANDARD TABLE.
 
@@ -833,12 +870,12 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
           ls_import_item = VALUE #(
                                      uuid = ms_file-uuid
                                      %target = VALUE #( (
-                                         DataJson = /ui2/cl_json=>serialize( data = <fs_line> )
-                                         Line = lv_line
+                                         datajson = /ui2/cl_json=>serialize( data = <fs_line> )
+                                         line = lv_line
                                          %cid = lv_line
                                          %control = VALUE #(
-                                            Line = if_abap_behv=>mk-on
-                                            DataJson = if_abap_behv=>mk-on
+                                            line = if_abap_behv=>mk-on
+                                            datajson = if_abap_behv=>mk-on
                                           )
                                       ) )
 
@@ -848,8 +885,8 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
 
         IF mt_import_item IS NOT INITIAL.
           MODIFY ENTITIES OF zzr_zt_dtimp_files
-              ENTITY Files
-              CREATE BY \_ImportData
+              ENTITY files
+              CREATE BY \_importdata
               FROM mt_import_item
               MAPPED DATA(ls_mapped)
               FAILED DATA(ls_failed)
@@ -918,13 +955,13 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
     add_text_to_app_log_or_console( |Saving messages.| ).
     IF ms_file IS NOT INITIAL.
       MODIFY ENTITIES OF zzr_zt_dtimp_files
-          ENTITY Files
-          UPDATE FIELDS ( Status )
-          WITH VALUE #( ( Status = 'S'
-                          %control-Status = if_abap_behv=>mk-on
+          ENTITY files
+          UPDATE FIELDS ( status )
+          WITH VALUE #( ( status = 'S'
+                          %control-status = if_abap_behv=>mk-on
                           %key-uuid = uuid
                            ) )
-          CREATE BY \_Messages
+          CREATE BY \_messages
           FROM mt_message_process
           MAPPED DATA(ls_mapped)
           FAILED DATA(ls_failed)
@@ -936,7 +973,10 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
 *          CATCH cx_bali_runtime.
 *        ENDTRY.
       ELSE.
-        COMMIT ENTITIES.
+        COMMIT ENTITIES
+            RESPONSES
+            FAILED DATA(ls_failed2)
+            REPORTED DATA(ls_reported2).
 *        TRY.
         add_text_to_app_log_or_console( i_text = | Check Navigation Messages of this record. |
                                         ).
@@ -951,10 +991,10 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
 
   METHOD save_process_status.
     MODIFY ENTITIES OF zzr_zt_dtimp_files
-        ENTITY Files
-        UPDATE FIELDS ( Status )
-        WITH VALUE #( ( Status =  i_type
-                        %control-Status = if_abap_behv=>mk-on
+        ENTITY files
+        UPDATE FIELDS ( status )
+        WITH VALUE #( ( status =  i_type
+                        %control-status = if_abap_behv=>mk-on
                         %key-uuid = uuid
                          ) )
         MAPPED DATA(ls_mapped)

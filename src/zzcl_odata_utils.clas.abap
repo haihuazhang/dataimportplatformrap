@@ -56,8 +56,10 @@ CLASS zzcl_odata_utils IMPLEMENTATION.
   METHOD filtering.
     TRY.
         DATA(lt_filter) = io_filter->get_as_ranges(  ).
-      CATCH cx_rap_query_filter_no_range INTO DATA(lx_no_range).
+      CATCH cx_rap_query_filter_no_range INTO DATA(lx_no_range). ##NO_HANDLER
+        EXIT.
         "handle exception
+        ##NO_HANDLER
     ENDTRY.
     FIELD-SYMBOLS: <fs_data> TYPE any,
                    <fs_fval> TYPE any.
@@ -76,6 +78,81 @@ CLASS zzcl_odata_utils IMPLEMENTATION.
     ENDLOOP.
 
 
+  ENDMETHOD.
+
+
+  METHOD get_alphabet.
+*    PARAMETERS char TYPE c DEFAULT 'A'.
+    DATA : cnt          TYPE i VALUE 0,
+           total_length TYPE i,
+           lv_abcde     TYPE c LENGTH 26 VALUE 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.
+    FIND FIRST OCCURRENCE OF iv_alphabet IN lv_abcde MATCH OFFSET cnt.
+    cnt += iv_number.
+    IF cnt > 25.
+      ev_alphabet = iv_alphabet.
+    ELSE.
+      ev_alphabet = lv_abcde+cnt(1).
+    ENDIF.
+  ENDMETHOD.
+
+
+  METHOD get_internal.
+    ev_data = iv_data.
+    IF io_elem_ref->edit_mask CS 'ALPHA'.
+
+      ev_data = | { iv_data ALPHA = IN } |.
+
+    ENDIF.
+
+    IF io_elem_ref->get_relative_name(  ) = 'SYSUUID_X16'.
+
+      DATA : lv_uuid_uppercase TYPE string.
+      lv_uuid_uppercase = iv_data.
+      TRANSLATE lv_uuid_uppercase TO UPPER CASE.
+      DATA(lv_uuid_length) = strlen( lv_uuid_uppercase ).
+      TRY.
+          CASE lv_uuid_length.
+            WHEN '16'.
+              ev_data = lv_uuid_uppercase.
+            WHEN '22'.
+              cl_system_uuid=>convert_uuid_c22_static(
+                  EXPORTING
+                      uuid = CONV sysuuid_c22( lv_uuid_uppercase )
+                  IMPORTING
+                      uuid_x16 = DATA(lv_uuid_x16)
+               ).
+              ev_data = lv_uuid_X16.
+            WHEN '26'.
+              cl_system_uuid=>convert_uuid_c26_static(
+              EXPORTING
+                     uuid = CONV sysuuid_c26( lv_uuid_uppercase )
+                 IMPORTING
+                     uuid_x16 = lv_uuid_X16
+              ).
+              ev_data = lv_uuid_X16.
+            WHEN '32'.
+              cl_system_uuid=>convert_uuid_c32_static(
+              EXPORTING
+                     uuid = CONV sysuuid_c32( lv_uuid_uppercase )
+                 IMPORTING
+                     uuid_x16 = lv_uuid_X16
+              ).
+              ev_data = lv_uuid_X16.
+            WHEN '36'.
+              cl_system_uuid=>convert_uuid_c36_static(
+                EXPORTING
+                   uuid = CONV sysuuid_c36( lv_uuid_uppercase )
+                IMPORTING
+                    uuid_x16 = lv_uuid_X16
+               ).
+              ev_data = lv_uuid_X16.
+          ENDCASE.
+        CATCH cx_uuid_error INTO DATA(lx_uuid).
+          "handle exception
+*          ev_data = lv_uuid_X16.
+          ev_data = iv_data.
+      ENDTRY.
+    ENDIF.
   ENDMETHOD.
 
 
@@ -157,75 +234,4 @@ CLASS zzcl_odata_utils IMPLEMENTATION.
 
     ct_data = <fs_result>.
   ENDMETHOD.
-  METHOD get_alphabet.
-*    PARAMETERS char TYPE c DEFAULT 'A'.
-    DATA : cnt          TYPE i VALUE 0,
-           total_length TYPE i,
-           lv_abcde     TYPE c LENGTH 26 VALUE 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.
-    FIND FIRST OCCURRENCE OF iv_alphabet IN lv_abcde MATCH OFFSET cnt.
-    cnt += iv_number.
-    IF cnt > 25.
-      ev_alphabet = iv_alphabet.
-    ELSE.
-      ev_alphabet = lv_abcde+cnt(1).
-    ENDIF.
-  ENDMETHOD.
-
-  METHOD get_internal.
-    ev_data = iv_data.
-    IF io_elem_ref->edit_mask CS 'ALPHA'.
-
-      ev_data = | { iv_data ALPHA = IN } |.
-
-    ENDIF.
-
-    IF io_elem_ref->get_relative_name(  ) = 'SYSUUID_X16'.
-
-      DATA : lv_uuid_uppercase TYPE string.
-      lv_uuid_uppercase = iv_data.
-      TRANSLATE lv_uuid_uppercase TO UPPER CASE.
-      DATA(lv_uuid_length) = strlen( lv_uuid_uppercase ).
-      TRY.
-          CASE lv_uuid_length.
-            WHEN '16'.
-              ev_data = lv_uuid_uppercase.
-            WHEN '22'.
-              cl_system_uuid=>convert_uuid_c22_static(
-                  EXPORTING
-                      uuid = CONV sysuuid_c22( lv_uuid_uppercase )
-                  IMPORTING
-                      uuid_x16 = DATA(lv_uuid_x16)
-               ).
-              ev_data = lv_uuid_X16.
-            WHEN '26'.
-              cl_system_uuid=>convert_uuid_c26_static(
-              EXPORTING
-                     uuid = CONV sysuuid_c26( lv_uuid_uppercase )
-                 IMPORTING
-                     uuid_x16 = lv_uuid_X16
-              ).
-              ev_data = lv_uuid_X16.
-            WHEN '32'.
-              cl_system_uuid=>convert_uuid_c32_static(
-              EXPORTING
-                     uuid = CONV sysuuid_c32( lv_uuid_uppercase )
-                 IMPORTING
-                     uuid_x16 = lv_uuid_X16
-              ).
-              ev_data = lv_uuid_X16.
-            WHEN '36'.
-              cl_system_uuid=>convert_uuid_c36_static(
-                EXPORTING
-                   uuid = CONV sysuuid_c36( lv_uuid_uppercase )
-                IMPORTING
-                    uuid_x16 = lv_uuid_X16
-               ).
-              ev_data = lv_uuid_X16.
-          ENDCASE.
-        CATCH cx_uuid_error.
-          "handle exception
-      ENDTRY.
-    ENDIF.
-  ENDMETHOD.
-
 ENDCLASS.

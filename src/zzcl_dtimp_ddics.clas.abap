@@ -21,7 +21,7 @@ ENDCLASS.
 
 
 
-CLASS ZZCL_DTIMP_DDICS IMPLEMENTATION.
+CLASS zzcl_dtimp_ddics IMPLEMENTATION.
 
 
   METHOD get_function_modules.
@@ -85,16 +85,17 @@ CLASS ZZCL_DTIMP_DDICS IMPLEMENTATION.
 
 
   METHOD if_rap_query_provider~select.
-    TRY.
-        CASE io_request->get_entity_id( ).
+*    TRY.
+    CASE io_request->get_entity_id( ).
 
-          WHEN 'ZZR_DTIMP_FUNC'.
-            get_function_modules( io_request = io_request io_response = io_response ).
-          WHEN 'ZZR_DTIMP_STRUC'.
-            get_structures( io_request = io_request io_response = io_response ).
-        ENDCASE.
+      WHEN 'ZZR_DTIMP_FUNC'.
+        get_function_modules( io_request = io_request io_response = io_response ).
+      WHEN 'ZZR_DTIMP_STRUC'.
+        get_structures( io_request = io_request io_response = io_response ).
+    ENDCASE.
 
-      CATCH cx_rap_query_provider.
-    ENDTRY.
+*      CATCH cx_rap_query_provider INTO DATA(lx_query). ##NO_HANDLER
+*        ##NO_HANDLER
+*    ENDTRY.
   ENDMETHOD.
 ENDCLASS.

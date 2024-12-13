@@ -30,7 +30,7 @@ ENDCLASS.
 
 
 
-CLASS ZHDCL_DMP_VALUEHELP IMPLEMENTATION.
+CLASS zhdcl_dmp_valuehelp IMPLEMENTATION.
 
 
   METHOD get_process_class.
@@ -58,22 +58,24 @@ CLASS ZHDCL_DMP_VALUEHELP IMPLEMENTATION.
 
 
   METHOD if_rap_query_provider~select.
-    TRY.
-        CASE io_request->get_entity_id( ).
+*    TRY.
+    CASE io_request->get_entity_id( ).
 
 *          WHEN 'ZHDR_DMP_V_COMM_SCENARIO'.
 *            get_comm_scenario( io_request = io_request io_response = io_response ).
 *          WHEN 'ZHDR_DMP_V_COMM_SYSTEM_ID'.
 *            get_system_id( io_request = io_request io_response = io_response ).
 
-          WHEN 'ZZR_DTIMP_CLASS'.
-            get_process_class( io_request = io_request io_response = io_response ).
+      WHEN 'ZZR_DTIMP_CLASS'.
+        get_process_class( io_request = io_request io_response = io_response ).
 
 *          WHEN 'ZHDR_DMP_V_CONVERSION_CLASS'.
 *            get_conversion_class( io_request = io_request io_response = io_response ).
-        ENDCASE.
+    ENDCASE.
 
-      CATCH cx_rap_query_provider.
-    ENDTRY.
+*      CATCH cx_rap_query_provider INTO DATA(lx_query). ##NO_HANDLER
+
+    ##NO_HANDLER
+*    ENDTRY.
   ENDMETHOD.
 ENDCLASS.

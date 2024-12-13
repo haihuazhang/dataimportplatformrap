@@ -7,7 +7,16 @@
   headerInfo: {
     typeName: 'Field',
     typeNamePlural: 'Fields'
-  }
+  },
+  presentationVariant: [{ 
+    sortOrder: [{ 
+        by: 'Sequence'
+     }],
+     visualizations: [{ 
+        type: #AS_LINEITEM
+      }]
+  
+   }]
 }
 annotate view ZZC_ZT_DTIMP_FIELD with
 {

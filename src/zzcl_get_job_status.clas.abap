@@ -90,7 +90,11 @@ CLASS ZZCL_GET_JOB_STATUS IMPLEMENTATION.
           <fs_original_data>-jobstatuscriticality = 0.
 
         CATCH cx_root INTO DATA(root_exception).
+           exception_message = cl_message_helper=>get_latest_t100_exception( root_exception )->if_message~get_longtext( ).
 
+          <fs_original_data>-jobstatus = ''.
+          <fs_original_data>-jobstatustext = root_exception->get_text(  ).
+          <fs_original_data>-jobstatuscriticality = 0.
 *          RAISE EXCEPTION TYPE zapp_cx_demo_01
 *            EXPORTING
 *              previous = root_exception.

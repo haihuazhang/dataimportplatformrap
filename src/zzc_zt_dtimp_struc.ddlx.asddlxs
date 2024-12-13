@@ -32,7 +32,8 @@ annotate view ZZC_ZT_DTIMP_STRUC with
     id:'Fields',
     purpose: #STANDARD,
     position: 30,
-    type: #LINEITEM_REFERENCE,
+//    type: #LINEITEM_REFERENCE,
+    type: #PRESENTATIONVARIANT_REFERENCE,
     targetElement: '_Fields'
   }]
   @UI.identification: [ {
