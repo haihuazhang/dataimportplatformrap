@@ -115,7 +115,7 @@ ENDCLASS.
 
 
 
-CLASS zzcl_dtimp_process_generic IMPLEMENTATION.
+CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
 
 
   METHOD add_except_to_log_or_console.
@@ -722,7 +722,7 @@ CLASS zzcl_dtimp_process_generic IMPLEMENTATION.
           kind = if_apj_dt_exec_object=>parameter
           sign = 'I'
           option = 'EQ'
-          low = '4B99A9A4D8731EEFADD559650FF73F4C' )
+          low = '4B99A9A4D8731EEFB0D244BA4E44DFF7' )
       ).
     "4B99A9A4D8731EEFAADE695E7824BEA1   GUZ
     "4B99A9A4-D873-1EEF-AA8F-1E7275F13E9E

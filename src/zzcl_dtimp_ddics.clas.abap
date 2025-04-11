@@ -21,7 +21,7 @@ ENDCLASS.
 
 
 
-CLASS zzcl_dtimp_ddics IMPLEMENTATION.
+CLASS ZZCL_DTIMP_DDICS IMPLEMENTATION.
 
 
   METHOD get_function_modules.

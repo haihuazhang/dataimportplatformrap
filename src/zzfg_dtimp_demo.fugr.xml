@@ -4,7 +4,6 @@
   <asx:values>
    <AREAT>Demo Function for Batch Data Import</AREAT>
    <INCLUDES>
-    <SOBJ_NAME>LZZFG_DTIMP_DEMOTOP</SOBJ_NAME>
     <SOBJ_NAME>SAPLZZFG_DTIMP_DEMO</SOBJ_NAME>
    </INCLUDES>
    <FUNCTIONS>

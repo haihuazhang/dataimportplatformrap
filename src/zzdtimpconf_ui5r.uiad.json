@@ -1,0 +1,33 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Manage Batch Import Configuration",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "zzdtimpconf"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_5274F4440F1E95351447DD78F82015E2529B62E9_TM",
+    "semanticObject": "zzdtimpconf",
+    "action": "display",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_5274F4440F1E95351447DD78F82015E2529B62E9_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Manage Batch Import Configuration"
+      }
+    }
+  ]
+}
