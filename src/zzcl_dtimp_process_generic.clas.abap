@@ -218,7 +218,7 @@ CLASS ZZCL_DTIMP_PROCESS_GENERIC IMPLEMENTATION.
                                                        isforeignfield = abap_true )
 *                ( cl_abap_dyn_prg=>check_allowlist( |{ foreign_field-fieldname } = '{ <fs_current_line>-(foreign_field-foreignfield) }' | ) )
                 ( |{ cl_abap_dyn_prg=>check_allowlist( val = foreign_field-fieldname
-                                                        allowlist_str = foreign_field-fieldname ) } = { cl_abap_dyn_prg=>quote( <fs_current_line>-(foreign_field-foreignfield) )  } |  )
+                                                        allowlist_str = foreign_field-fieldname ) } = { cl_abap_dyn_prg=>quote( CONV string( <fs_current_line>-(foreign_field-foreignfield) ) )  } |  )
 
 *                 ( cl_abap_dyn_prg=>check_allowlist( val = |{ foreign_field-fieldname } = { cl_abap_dyn_prg=>quote( <fs_current_line>-(foreign_field-foreignfield) ) }|
 *                                                     allowlist_str = |{ foreign_field-fieldname } = { cl_abap_dyn_prg=>quote( <fs_current_line>-(foreign_field-foreignfield) ) }| ) )
