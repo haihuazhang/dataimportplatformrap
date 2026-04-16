@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: "3.1"
+metadata:
+  name: zzdtimpconf
+type: application
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          destination: Atosa-Develop-Dev
+          url: https://my407773-api.s4hana.cloud.sap
+        app:
+          name: ZZDTIMPCONF
+          description: configuration app for batch
+          package: ZZDATAIMPORT
+          transport: X7UK900025
+        exclude:
+          - /test/
